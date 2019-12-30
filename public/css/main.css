@@ -1,0 +1,19 @@
+.body-container {
+  background-image: url("/assets/images/background_science.jpg");
+  min-height: 100vh;
+}
+
+.circle.register_stage {
+  height: 50px;
+  border: thin solid gray;
+  width: 50px;
+  background-color: aqua;
+  margin: 10px;
+  line-height: 50px;
+}
+
+.circle.register_stage.active {
+  background-color: #ff4949;
+  color: white;
+}
+
