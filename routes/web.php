@@ -11,10 +11,22 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes(['verify' => true]);
+
+
+Route::middleware(['auth'])->group(function(){
+    Route::prefix('profile')->group(function(){
+        Route::get('/', 'profile\userProfileController@getProfileIndexPage')->name('profileIndexPage');
+        Route::get('/details', 'profile\userProfileController@getProfileDetailsPage')->name('profileDetailsPage');
+        
+
+
+        Route::prefix('submission')->group(function(){
+            Route::get('/new', 'submission\submissionController@newSubmissionPage')->name('newSubmissionPage')->middleware('verified');
+        });
+    });
 });
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'home\guestRequestController@getHomePage')->name('homePage');
+Route::get('/aboutus', 'home\guestRequestController@getAboutUsPage')->name('aboutUsPage');
+// Route::get('/home', 'HomeController@index')->name('home');

@@ -15,14 +15,15 @@ class CreatePersonInfoTable extends Migration
     {
         Schema::create('person_info', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('user_id');
-            $table->string('user__token',330);
+            $table->bigInteger('user_id')->unique();
+            $table->string('user_token',330);
+            $table->string('profile_picture',330);
             $table->string('user_title',45);
             $table->string('living_city',45);
             $table->string('living_country',45);
             $table->string('institute',250);
             $table->string('institute_country',45);
-            $table->string('gender', 7);
+            $table->boolean('gender');
             $table->string('profession',45);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

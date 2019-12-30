@@ -1,5 +1,9 @@
 @extends('profile.layout.main')
 
+@section('custom-links')
+
+@endsection
+
 @section('page-content')
 <div class="container-fluid">
 
@@ -161,4 +165,15 @@
     
 
   </div>
+@endsection
+
+@section('custom_scripts')
+    
+  <!-- Page level plugins -->
+  <script src="/profile_assets/vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="/profile_assets/js/demo/chart-area-demo.js"></script>
+  <script src="/profile_assets/js/demo/chart-pie-demo.js"></script>
+
 @endsection

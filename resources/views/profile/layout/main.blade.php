@@ -13,11 +13,12 @@
 
   <!-- Custom fonts for this template-->
   <link href="/profile_assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
+  {{-- <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"> --}}
+  
   <!-- Custom styles for this template-->
   <link href="/profile_assets/css/sb-admin-2.min.css" rel="stylesheet">
 
+  @yield('custom-links')
 </head>
 
 <body id="page-top">
@@ -41,9 +42,9 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="/profile">
+        <a class="nav-link" href="/">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
+          <span>Home</span></a>
       </li>
 
       <!-- Divider -->
@@ -78,10 +79,10 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Submissions:</h6>
-            <a class="collapse-item" href="/admin/products/new">New </a>
-            <a class="collapse-item" href="/admin/products/list">Accepted </a>
-            <a class="collapse-item" href="/admin/products/list/disabled">Pending</a>
-            <a class="collapse-item" href="/admin/products/list/disabled">Rejected</a>
+            <a class="collapse-item" href="/profile/submission/new">New </a>
+            <a class="collapse-item" href="/profile/submission/accepted">Accepted </a>
+            <a class="collapse-item" href="/profile/submission/pending">Pending</a>
+            <a class="collapse-item" href="/profile/submission/rejected">Rejected</a>
           </div>
         </div>
       </li>
@@ -295,7 +296,7 @@
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{/*Auth::user()->name*/'Noor Abdi'}}</span>
+              <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::user()->name}}</span>
                 <img class="img-profile rounded-circle" src="/profile_assets/img/user_icon.png">
               </a>
               <!-- Dropdown - User Information -->
@@ -388,13 +389,8 @@
   <!-- Custom scripts for all pages-->
   <script src="/profile_assets/js/sb-admin-2.min.js"></script>
 
-  <!-- Page level plugins -->
-  <script src="/profile_assets/vendor/chart.js/Chart.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="/profile_assets/js/demo/chart-area-demo.js"></script>
-  <script src="/profile_assets/js/demo/chart-pie-demo.js"></script>
-
+  
+  @yield('custom_scripts')
 </body>
 
 </html>

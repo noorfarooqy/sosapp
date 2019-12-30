@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layout.base_template')
 
-@section('content')
-<div class="container">
+@section('page-content')
+<div class="container mt-5 mb-5 pd-5" style="min-height:300px">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
