@@ -31778,12 +31778,34 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var serverRequest =
 /*#__PURE__*/
 function () {
-  function serverRequest() {
+  function serverRequest(onProgress) {
     _classCallCheck(this, serverRequest);
 
     this.req = null;
     this.error = null;
     this.data = null;
+    this.config = {
+      onUploadProgress: function onUploadProgress(progressEvent) {
+        var percentCompleted = Math.round(progressEvent.loaded * 100 / progressEvent.total); // execute the callback
+
+        if (onProgress) {
+          console.log('progress ', percentCompleted);
+          onProgress(percentCompleted, 0);
+        }
+
+        return percentCompleted;
+      },
+      onDownloadProgress: function onDownloadProgress(progressEvent) {
+        var percentCompleted = Math.round(progressEvent.loaded * 100 / progressEvent.total); // execute the callback
+
+        if (onProgress) {
+          console.log('progress ', percentCompleted);
+          onProgress(percentCompleted, 1);
+        }
+
+        return percentCompleted;
+      }
+    };
   }
 
   _createClass(serverRequest, [{
@@ -31797,10 +31819,10 @@ function () {
     value: function serverRequest(url, successCallback, errorCallback) {
       var _this = this;
 
-      var args = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+      var progressBar = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
       //args contains list of functions or additional properties
       //for the successCallback
-      axios.post(url, this.req).then(function (response) {
+      axios.post(url, this.req, this.config).then(function (response) {
         response = response.data;
 
         if (response.hasOwnProperty('error_message')) {
@@ -31808,10 +31830,10 @@ function () {
           _this.error = response.error_message;
           errorCallback(_this.error);
           return false;
-        } else if (response.isSuccess) {
+        } else if (response.hasOwnProperty("success_message")) {
           console.log('success request ', response);
           _this.data = response.data;
-          successCallback(_this.data, args);
+          successCallback(_this.data);
           return true;
         } else {
           console.log('error reposen ', response);

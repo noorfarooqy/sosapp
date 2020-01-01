@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layout.base_template')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
+@section('page-content')
+<div class="container mb-5 mt-5 ">
+    <div class="row justify-content-center mt-5">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
@@ -62,6 +62,17 @@
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row mb-0 mt-4">
+                            <div class="col-md-8 offset-md-4">
+
+                                Not a member?
+                                <a class="btn btn-link" href="{{ route('register') }}">
+                                     {{ __('Register instead?') }}
+                                </a>
                             </div>
                         </div>
                     </form>

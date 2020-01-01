@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->group(function () {
     
     Route::post('/profile/update', 'profile\userProfileController@updateUserProfile')->name('updateUserProfile');
+    Route::post('/profile/details', 'profile\userProfileController@getProfileDetailsJson')->name('profileDetails');
 });
 
 // Route::middleware('auth:api')->post('/profile/update', function(Request $request) {
