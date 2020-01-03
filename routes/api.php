@@ -17,6 +17,14 @@ Route::middleware('auth:api')->group(function () {
     
     Route::post('/profile/update', 'profile\userProfileController@updateUserProfile')->name('updateUserProfile');
     Route::post('/profile/details', 'profile\userProfileController@getProfileDetailsJson')->name('profileDetails');
+
+    Route::middleware('verified')->group(function(){
+        Route::prefix('/submission')->group(function(){
+            Route::post('manuscript', 'submission\submissionController@setManuscript');
+            Route::post('authors', 'submission\submissionController@setManuscriptAuthors');
+            Route::post('files', 'submission\submissionController@setManuscriptFiles');
+        });
+    });
 });
 
 // Route::middleware('auth:api')->post('/profile/update', function(Request $request) {

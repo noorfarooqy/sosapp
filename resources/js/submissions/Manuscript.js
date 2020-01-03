@@ -73,4 +73,20 @@ export default class {
         }
         return true;
     }
+
+    getScriptForm()
+    {
+        var formData = new FormData();
+        formData.append('mansucript_type', this.manuscript_type);
+        formData.append('manuscript_title', this.manuscript_title);
+        formData.append('manuscript_abstract', this.manuscript_abstract);
+        formData.append('mansucript_keywords', this.mansucript_keywords);
+        formData.append('mansucript_file', this.manuscript_files.manuscript.src);
+        formData.append('mansucript_cover', this.manuscript_files.cover.src);
+        return formData;
+    }
+    getScriptAuthors()
+    {
+        return this.manuscript_authors;
+    }
 }

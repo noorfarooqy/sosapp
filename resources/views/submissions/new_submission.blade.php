@@ -518,7 +518,7 @@
                                         </div>
                                         <div class="box-4">
                                             <button class="btn btn-danger">Clear all</button>
-                                            <button class="btn btn-primary">Submit</button>
+                                            <button class="btn btn-primary" @click.prevent="saveScript()">Submit</button>
                                         </div>
                                     </div>
                                 </div>

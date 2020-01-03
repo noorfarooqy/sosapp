@@ -32180,6 +32180,23 @@ function () {
 
       return true;
     }
+  }, {
+    key: "getScriptForm",
+    value: function getScriptForm() {
+      var formData = new FormData();
+      formData.append('mansucript_type', this.manuscript_type);
+      formData.append('manuscript_title', this.manuscript_title);
+      formData.append('manuscript_abstract', this.manuscript_abstract);
+      formData.append('mansucript_keywords', this.mansucript_keywords);
+      formData.append('mansucript_file', this.manuscript_files.manuscript.src);
+      formData.append('mansucript_cover', this.manuscript_files.cover.src);
+      return formData;
+    }
+  }, {
+    key: "getScriptAuthors",
+    value: function getScriptAuthors() {
+      return this.manuscript_authors;
+    }
   }]);
 
   return _default;
@@ -32235,6 +32252,17 @@ var app = new Vue({
     this.getPersonInformation();
   },
   methods: {
+    saveScript: function saveScript() {
+      this.Server.setRequest(); // req.authors = this.Manuscript_data.getScriptAuthors();
+
+      var req = this.Manuscript_data.getScriptForm();
+      req.append('api_token', this.token);
+      this.Server.setRequest(req);
+      this.Server.serverRequest('/api/submission/manuscript', this.AuthorSaved, this.showError); // this.Server.serverRequest('/api/submission/authors', this.AuthorSaved, this.showError);
+    },
+    AuthorSaved: function AuthorSaved(data) {
+      console.log('saved author ', data);
+    },
     prepareManuscriptFiles: function prepareManuscriptFiles(event, type) {
       var input = event.target;
       console.log('input ', input);
@@ -32304,11 +32332,11 @@ var app = new Vue({
     },
     prepareManuscript: function prepareManuscript(file) {
       console.log('file  ', file);
-      this.Manuscript_data.manuscript_files.manuscript.src = file.target.result;
+      this.Manuscript_data.manuscript_files.manuscript.src = file.target;
     },
     prepareCover: function prepareCover(file) {
       console.log('file  ', file);
-      this.Manuscript_data.manuscript_files.cover.src = file.target.result;
+      this.Manuscript_data.manuscript_files.cover.src = file.target;
     },
     prepareFigures: function prepareFigures(file) {
       console.log('file  ', file);

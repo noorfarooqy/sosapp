@@ -34,6 +34,23 @@ var app = new Vue({
     },
     methods: {
 
+        saveScript()
+        {
+            this.Server.setRequest();
+            // req.authors = this.Manuscript_data.getScriptAuthors();
+            var req = this.Manuscript_data.getScriptForm()
+
+            req.append('api_token' , this.token)
+            this.Server.setRequest(req);
+            this.Server.serverRequest('/api/submission/manuscript', this.AuthorSaved, this.showError);
+            // this.Server.serverRequest('/api/submission/authors', this.AuthorSaved, this.showError);
+        },
+
+        AuthorSaved(data)
+        {
+            console.log('saved author ',data);
+        },
+
         prepareManuscriptFiles(event, type)
         {
             var input = event.target;
@@ -111,12 +128,12 @@ var app = new Vue({
         {
             
             console.log('file  ',file);
-            this.Manuscript_data.manuscript_files.manuscript.src =file.target.result;
+            this.Manuscript_data.manuscript_files.manuscript.src =file.target;
         },
         prepareCover(file)
         {
             console.log('file  ',file);
-            this.Manuscript_data.manuscript_files.cover.src =file.target.result;
+            this.Manuscript_data.manuscript_files.cover.src =file.target;
         },
         prepareFigures(file)
         {
@@ -188,6 +205,7 @@ var app = new Vue({
         {
             this.Manuscript_data.manuscript_authors = [];
             this.Manuscript_data.manuscript_authors.push(this.Profile);
+            
         },
         getAuthorClass()
         {

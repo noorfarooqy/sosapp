@@ -108,7 +108,7 @@ class userProfileController extends Controller
                 "email" => $profile->email,
                 "location" => $profile_data->living_country,
                 "institute" => $profile_data->institute,
-                "gender" => $profile_data->gender === 0 ? "Male" : "Female"
+                "gender" => $profile_data->gender 
             ],
         ]);
         return $this->Status->getSuccess();
