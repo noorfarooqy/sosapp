@@ -28,6 +28,7 @@
 @section('page-content')
 
 <errormodal v-on:dis-miss-error-modal="Error.resetErrorModal()" v-if="Error.visible" v-bind="Error"></errormodal>
+<subsuccess v-if="Success.visible" v-bind="Success" v-on:dis-miss-subsuccess-modal="Success.resetSuccessModal()"></subsuccess>
 <div class="row">
     <div class="col-md-1 col-lg-1"></div>
     <div class="col-md-10 col-lg-10">

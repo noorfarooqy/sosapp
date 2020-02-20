@@ -6,6 +6,9 @@ use App\CustomClass\CustomValidator;
 use App\CustomClass\FileManager;
 use App\CustomClass\Status;
 use App\Http\Controllers\Controller;
+use App\models\submissions\submissionAuthorsModel;
+use App\models\submissions\submissionFilesModel;
+use App\models\submissions\submissionsModel;
 use Illuminate\Http\Request;
 use \Auth;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +25,7 @@ class submissionController extends Controller
         $this->Status = new Status();
         $this->FileMananger = new FileManager();
         $this->CustomValidator = new CustomValidator();
+        $this->submision_folder = Str::random(15)."_".time();
     }
     public function newSubmissionPage()
     {
@@ -56,38 +60,99 @@ class submissionController extends Controller
             return $this->FileMananger->getError();
         }
 
-        $this->Status->setSuccess(["man" => $uploaded_manuscript, "cover" => $uploaded_cover]);
+        $uploaded_figures = $this->setManuscriptFiles($request, $user_profile);
+        if ($uploaded_figures === false) {
+            return $this->FileMananger->getError();
+        }
+        else if(!is_array($uploaded_figures) || count($uploaded_figures) <= 0)
+        {
+            $this->Status->setError(["The uploaded figures are empty."]);
+            return $this->Status->getError();
+        }
+        
+        $is_valid_authors = $this->isValidAuthors($request);
+        
+        if($is_valid_authors !== true)
+            return $is_valid_authors;
+        $submission_token = Str::random(32).time();
+
+        $submission = submissionsModel::create([
+            "user_id" => $user->id, 
+            "user_token" => $user_profile->user_token, 
+            "submssion_token" => $submission_token, 
+            "submission_type" => $request->mansucript_type, 
+            "submission_title" => $request->manuscript_title, 
+            "submission_abstract" => $request->manuscript_abstract, 
+            "submission_keywords" => $request->mansucript_keywords, 
+            "submission_manuscript" => $uploaded_manuscript, 
+            "submission_cover" => $uploaded_cover
+        ]);
+
+        foreach ($uploaded_figures as $key => $figure) {
+            # code...
+            $sub_files = submissionFilesModel::create([
+                "submission_id" => $submission->id, 
+                "submission_token" => $submission_token, 
+                "submission_file" => $figure,
+                "submission_file_index" => $key
+            ]);
+        }
+        $authors = $request->manuscript_authors;
+
+        foreach ($authors as $key => $author) {
+            # code...
+            $author = json_decode($author, true);
+            $sub_authors = submissionAuthorsModel::create([
+                "submission_id" => $submission->id, 
+                "submission_token" => $submission_token, 
+                "author_firstname" => $author['first_name'],
+                "author_secondname" => $author['second_name'], 
+                "author_email" => $author['email'], 
+                "author_institute" => $author['institute'],
+                "author_location" => $author['location'], 
+                "author_gender" => $author['gender']
+            ]);
+        }
+        
+
+        $this->Status->setSuccess(["man" => $uploaded_manuscript, "cover" => $uploaded_cover, "figures" => $uploaded_figures]);
         return $this->Status->getSuccess();
         
 
         
     }
-    public function setManuscriptAuthors(Request $request)
+    public function setManuscriptFiles(Request $request, $user_profile)
     {
-        $is_valid = $this->isValidAuthors($request);
-        
-        if($is_valid !== true)
-            return $is_valid;
-        
-        $this->Status->setSuccess(["We are good here "]);
-        return $this->Status->getSuccess();
-    }
-    public function setManuscriptFiles(Request $request)
-    {
-        $is_valid = $this->isValidFiles($request);
-    }
-    public function isValidFiles($request)
-    {
-        $rules = [
+        // $is_valid = $this->isValidFiles($request);
+        $path = "uploads/" . $user_profile->user_token . "/submissions/$this->submision_folder/";
+        $this->FileMananger->setExtension([
+            "image/jpg",
+            "image/png",
+            "image/jpeg",
+            "image/tif"
+        ]);
 
-        ];
+        $this->FileMananger->setPath($path);
+        $uploaded_figures =[];
+        $files = $request->file('mansucript_figures');
+        // return $files;
+        foreach ($files as $figure) {
+            # code...
+            
+    
+            $is_uploaded = $this->FileMananger->uploadFile($figure);
+            // return $is_uploaded;
+            if(!$is_uploaded)
+                return false;
+            array_push($uploaded_figures, $is_uploaded);
+        }
+        return $uploaded_figures;
 
-        return $this->isValidRequest($request, $rules,[]);
     }
     public function isValidAuthors(Request $request)
     {
         $rules_all = [
-            "authors" => "required|array"
+            "manuscript_authors" => "required|array"
         ];
         $messages =[
             "required" => "You must provide at least one author for the submission",
@@ -95,25 +160,26 @@ class submissionController extends Controller
         $no_authors = $this->isValidRequest($request->all(), $rules_all, $messages);
         if($no_authors !== true)
             return $no_authors;
-        $authors = $request->get('authors');
+        $authors = $request->manuscript_authors;
         foreach($authors as $key => $author)
         {
+            $author = json_decode($author, true);
+            // var_dump($author);
             $rule = [
                 "email" =>"required|email",
                 "first_name" => "required|string|min:2|max:45",
+                "second_name" => "nullable|string|min:2|max:45",
                 "gender" => "required|integer|in:0,1",
                 "institute" => "required|string|min:4|max:45",
                 "location" => "required|string|min:4|max:45"
             ];
-            if($author['second_name'])
-                array_push($rule, ["second_name", "string|min:2|max:45"]);
             $messages = [
                 "required" => "The :attribute of the author number ".($key+1)." is required ",
                 "string" => "The :attribute of the author number ".($key+1)." is must be string ",
                 "integer" => "The :attribute of the author number ".($key+1)." is must be integer ",
                 "in" => "The :attribute of the author number ".($key+1)." is must be male or female ",
-                "min" => "The :attribute of the author number ".($key+1)." is cannot be less than :min characters ",
-                "max" => "The :attribute of the author number ".($key+1)." is cannot be more than :max characters ",
+                "min" => "The :attribute of the author number ".($key+1)." cannot be less than :min characters ",
+                "max" => "The :attribute of the author number ".($key+1)." cannot be more than :max characters ",
             ];
             $new_req = new Request();
             $new_req->setMethod('POST');
@@ -138,8 +204,9 @@ class submissionController extends Controller
             "manuscript_title" => "required|min:15|max:150",
             "manuscript_abstract" => "required|min:50|max:1000",
             "mansucript_keywords" => "required|min:15|max:230",
-            "mansucript_file" => "required",
-            "mansucript_cover" => "required",
+            "mansucript_file" => "required|file",
+            "mansucript_cover" => "required|file",
+            "mansucript_figures.*src" => "required|file"
         ];
         return $this->isValidRequest($request->all(), $rules, []);
         
@@ -157,8 +224,8 @@ class submissionController extends Controller
     }
     public function UploadManuscript($manuscript_file, $user_profile)
     {
-        $submision_folder = Str::random(15)."_".time();
-        $path = "/uploads/" . $user_profile->user_token . "/submissions/$submision_folder/";
+        
+        $path = "uploads/" . $user_profile->user_token . "/submissions/$this->submision_folder/";
         
         $this->FileMananger->setExtension([
             "application/msword",

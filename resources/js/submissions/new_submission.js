@@ -3,9 +3,11 @@ require ("../bootstrap")
 import Manuscript from "./Manuscript";
 import Author from "./Author";
 import Error from "../classes/Error";
+import Success from "../classes/Success";
 
 // compnents
 import errormodal from "../modals/errormodal.vue";
+import sub_success from "../modals/success_sub.vue"
 var app = new Vue({
     el: "#wrapper",
     data: {
@@ -25,19 +27,26 @@ var app = new Vue({
         Profile:null,
         figure_holder:null,
         Error: new Error(),
+        Success: new Success(),
         
     },
     mounted() {
         // alert('ready');
         this.setApiToken();
         this.getPersonInformation();
+        this.Success.showSuccessModal('Well done ticker')
     },
     methods: {
 
         saveScript()
         {
-            this.Server.setRequest();
+            // this.Server.setRequest();
             // req.authors = this.Manuscript_data.getScriptAuthors();
+            if(!this.Manuscript_data.hasFilledAll())
+            {
+                this.showError('You have incomplete manuscript. Please complete before submitting');
+                return;
+            }
             var req = this.Manuscript_data.getScriptForm()
 
             req.append('api_token' , this.token)
@@ -49,6 +58,7 @@ var app = new Vue({
         AuthorSaved(data)
         {
             console.log('saved author ',data);
+            this.Success.showSuccessModal('Your submission was successful')
         },
 
         prepareManuscriptFiles(event, type)
@@ -67,11 +77,11 @@ var app = new Vue({
                     return;
                 }
                 this.Manuscript_data.manuscript_files.manuscript = {
-                    src: null,
+                    src: input.files[0],
                     name: input.files[0].name,
                     type: 'Manuscript',
                 }
-                this.Server.previewFile(input,this.prepareManuscript, this.showError);
+                // this.Server.previewFile(input,this.prepareManuscript, this.showError);
             }
             else if(parseInt(type) === 1)
             {
@@ -83,11 +93,11 @@ var app = new Vue({
                     return;
                 }
                 this.Manuscript_data.manuscript_files.cover = {
-                    src: null,
+                    src: input.files[0],
                     name: input.files[0].name,
                     type: 'Cover',
                 }
-                this.Server.previewFile(input,this.prepareCover, this.showError);
+                // this.Server.previewFile(input,this.prepareCover, this.showError);
             }
             else if(parseInt(type) === 2)
             {
@@ -99,11 +109,12 @@ var app = new Vue({
                     return;
                 }
                 this.figure_holder = {
-                    src: null,
+                    src: input.files[0],
                     name: input.files[0].name,
                     type: 'Figure',
                 }
-                this.Server.previewFile(input, this.prepareFigures, this.showError);
+                this.Manuscript_data.manuscript_files.figures.push(this.figure_holder);
+                // this.Server.previewFile(input, this.prepareFigures, this.showError);
             }
             else if(parseInt(type) === 3)
             {
@@ -116,11 +127,11 @@ var app = new Vue({
                     return;
                 }
                 this.figure_holder = {
-                    src: null,
+                    src: input.files[0],
                     name: input.files[0].name,
                     type: 'Figure',
                 }
-                this.Server.previewFile(input, this.prepareOthers, this.showError);
+                // this.Server.previewFile(input, this.prepareOthers, this.showError);
             }
                 
         },
@@ -247,5 +258,5 @@ var app = new Vue({
         },
 
     },
-    components: {errormodal}
+    components: {errormodal, subsuccess: sub_success}
 })

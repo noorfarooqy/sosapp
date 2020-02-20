@@ -20,7 +20,6 @@ class CreateSubmissionFilesTables extends Migration
             $table->string('submission_file', 330);
             $table->integer('submission_file_index');
             $table->integer('submission_file_type')->default(0); //default is figure, 1 is others
-            $table->integer('submission_file_ext')->default(0); //defautl is picture
             $table->timestamps();
         });
     }

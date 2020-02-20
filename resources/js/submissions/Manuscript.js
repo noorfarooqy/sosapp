@@ -81,8 +81,20 @@ export default class {
         formData.append('manuscript_title', this.manuscript_title);
         formData.append('manuscript_abstract', this.manuscript_abstract);
         formData.append('mansucript_keywords', this.mansucript_keywords);
+        var a_count =0;
+        this.manuscript_authors.forEach(author => {
+            
+            formData.append('manuscript_authors['+a_count+']', JSON.stringify(author));
+        })
+        
         formData.append('mansucript_file', this.manuscript_files.manuscript.src);
         formData.append('mansucript_cover', this.manuscript_files.cover.src);
+        var fig_count = 0;
+        this.manuscript_files.figures.forEach(figure => {
+            formData.append('mansucript_figures['+fig_count+']', figure.src);
+            fig_count++;
+        })
+        
         return formData;
     }
     getScriptAuthors()

@@ -1,8 +1,10 @@
+var self;
 export default class {
     constructor() {
         this.success_title = 'Success';
         this.success_text = null;
         this.visible = false;
+        self = this;
     }
 
     showSuccessModal(success_text='null', success_title='Success!')
@@ -13,8 +15,8 @@ export default class {
     }
     resetSuccessModal()
     {
-        this.success_title = "Success";
-        this.success_text = 'Success';
-        this.visible = false;
+        self.success_title = "Success";
+        self.success_text = 'Success';
+        self.visible = false;
     }
 }
