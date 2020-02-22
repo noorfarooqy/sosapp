@@ -1903,6 +1903,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1911,9 +1913,6 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    triggerMe: function triggerMe() {
-      console.log('what ');
-    },
     disMissError: function disMissError() {
       console.log('dismissing sub success');
       this.$emit('dis-miss-subsuccess-modal');
@@ -19639,58 +19638,60 @@ var render = function() {
     },
     [
       _c("div", { staticClass: "modal-dialog", attrs: { role: "document" } }, [
-        _c("div", { staticClass: "model-content" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticStyle: { color: "white" },
-              on: {
-                click: function($event) {
-                  return _vm.triggerMe()
-                }
-              }
-            },
-            [
-              _vm._v(
-                "\n                " +
-                  _vm._s(_vm.success_text) +
-                  "\n            "
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "btn btn-success",
-              on: {
-                click: function($event) {
-                  return _vm.triggerMe()
-                }
-              }
-            },
-            [_vm._v("Great")]
-          )
-        ])
+        _c(
+          "div",
+          {
+            staticClass: "modal-content",
+            staticStyle: { "background-color": "unset", border: "unset" }
+          },
+          [
+            _c("div", { staticClass: "modal-body" }, [
+              _c("div", { staticClass: "text-center" }, [
+                _c("img", {
+                  staticStyle: { "border-radius": "15%", height: "227px" },
+                  attrs: { src: "/assets/images/dark_tick.gif", alt: "" }
+                }),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticStyle: { color: "white" },
+                    on: {
+                      click: function($event) {
+                        return _vm.triggerMe()
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(_vm.success_text) +
+                        "\n                "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "btn btn-success",
+                    on: {
+                      click: function($event) {
+                        return _vm.disMissError()
+                      }
+                    }
+                  },
+                  [_vm._v("Great")]
+                )
+              ])
+            ])
+          ]
+        )
       ])
     ]
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "text-center" }, [
-      _c("img", {
-        staticStyle: { "border-radius": "15%", height: "227px" },
-        attrs: { src: "/assets/images/dark_tick.gif", alt: "" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -32527,7 +32528,6 @@ var app = new Vue({
     // alert('ready');
     this.setApiToken();
     this.getPersonInformation();
-    this.Success.showSuccessModal('Well done ticker');
   },
   methods: {
     saveScript: function saveScript() {
@@ -32541,9 +32541,9 @@ var app = new Vue({
       var req = this.Manuscript_data.getScriptForm();
       req.append('api_token', this.token);
       this.Server.setRequest(req);
-      this.Server.serverRequest('/api/submission/manuscript', this.AuthorSaved, this.showError); // this.Server.serverRequest('/api/submission/authors', this.AuthorSaved, this.showError);
+      this.Server.serverRequest('/api/submission/manuscript', this.savedManuscript, this.showError); // this.Server.serverRequest('/api/submission/authors', this.AuthorSaved, this.showError);
     },
-    AuthorSaved: function AuthorSaved(data) {
+    savedManuscript: function savedManuscript(data) {
       console.log('saved author ', data);
       this.Success.showSuccessModal('Your submission was successful');
     },

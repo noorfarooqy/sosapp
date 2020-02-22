@@ -34,7 +34,6 @@ var app = new Vue({
         // alert('ready');
         this.setApiToken();
         this.getPersonInformation();
-        this.Success.showSuccessModal('Well done ticker')
     },
     methods: {
 
@@ -51,11 +50,11 @@ var app = new Vue({
 
             req.append('api_token' , this.token)
             this.Server.setRequest(req);
-            this.Server.serverRequest('/api/submission/manuscript', this.AuthorSaved, this.showError);
+            this.Server.serverRequest('/api/submission/manuscript', this.savedManuscript, this.showError);
             // this.Server.serverRequest('/api/submission/authors', this.AuthorSaved, this.showError);
         },
 
-        AuthorSaved(data)
+        savedManuscript(data)
         {
             console.log('saved author ',data);
             this.Success.showSuccessModal('Your submission was successful')

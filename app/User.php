@@ -2,9 +2,12 @@
 
 namespace App;
 
+use App\models\submissions\submissionsModel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Bus;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -16,7 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','api_token'
+        'name', 'email', 'password', 'api_token',
     ];
 
     /**
@@ -40,5 +43,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profileData()
     {
         return $this->hasOne('App\models\profile\userProfileModel', 'user_id');
+    }
+    public function allSubmissions()
+    {
+        return $this->hasMany(submissionsModel::class, 'user_id', 'id');
+    }
+    public function getPendingSubmissions()
+    {
+        return $this->whereHas('allSubmissions', function (Builder $query){
+            $query->where('submission_status', '=',0);
+        });
     }
 }
