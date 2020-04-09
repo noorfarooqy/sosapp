@@ -57,7 +57,10 @@ var app = new Vue({
         savedManuscript(data)
         {
             console.log('saved author ',data);
-            this.Success.showSuccessModal('Your submission was successful')
+            this.Success.showSuccessModal('Your submission was successful. Redirecting you to the manuscript page');
+            this.Manuscript_data = new Manuscript();
+            window.location.href = '/'+'profile/submission/view/'+data.submission.id;
+
         },
 
         prepareManuscriptFiles(event, type)

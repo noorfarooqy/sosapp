@@ -19,9 +19,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/details', 'profile\userProfileController@getProfileDetailsPage')->name('profileDetailsPage');
 
         Route::prefix('submission')->group(function () {
-            Route::get('/new', 'submission\submissionController@newSubmissionPage')->name('newSubmissionPage')->middleware('verified');
-            Route::get('/view/{id}', 'submission\submissionController@viewUserSubmission')->name('viewUserSubmission')->middleware('verified');
-            Route::get('/pending', 'submission\submissionController@openPendingSubmissions')->name('openPendingSubmissions')->middleware('verified');
+            Route::middleware('verified')->group(function(){
+                Route::get('/new', 'submission\submissionController@newSubmissionPage')->name('newSubmissionPage');
+                Route::get('/view/{id}', 'submission\submissionController@viewUserSubmission')->name('viewUserSubmission');
+                Route::get('/edit/manuscript/{id}', 'submission\submissionController@editManuscript')->name('update_manuscript');
+                Route::post('/edit/manuscript/{id}', 'submission\submissionController@doEditManuscript')->name('doupdate_manuscript');
+                Route::get('/edit/authors/{id}', 'submission\submissionController@editManuscriptAuthors')->name('update_authors');
+                Route::get('/edit/authors/{id}', 'submission\submissionController@doEditManuscriptAuthors')->name('update_authors');
+                Route::get('/edit/files/{id}', 'submission\submissionController@editManuscriptFiles')->name('update_files');
+                Route::get('/re/{sub_id}/{auth_id}','submission\submissionController@remSubmissionAuthor')->name('rem_sub_author');
+                Route::get('/accepted', 'submission\submissionController@openAcceptedSubmissions')->name('openAcceptedSubmissions');
+                Route::get('/pending', 'submission\submissionController@openPendingSubmissions')->name('openPendingSubmissions');
+                Route::get('/resent', 'submission\submissionController@openResentSubmissions')->name('openPendingSubmissions');
+                Route::get('/rejected', 'submission\submissionController@openRejectedSubmissions')->name('openPendingSubmissions');
+            });
+            
         });
     });
 });

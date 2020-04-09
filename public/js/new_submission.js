@@ -32455,6 +32455,7 @@ function () {
       var a_count = 0;
       this.manuscript_authors.forEach(function (author) {
         formData.append('manuscript_authors[' + a_count + ']', JSON.stringify(author));
+        a_count = a_count + 1;
       });
       formData.append('mansucript_file', this.manuscript_files.manuscript.src);
       formData.append('mansucript_cover', this.manuscript_files.cover.src);
@@ -32545,7 +32546,9 @@ var app = new Vue({
     },
     savedManuscript: function savedManuscript(data) {
       console.log('saved author ', data);
-      this.Success.showSuccessModal('Your submission was successful');
+      this.Success.showSuccessModal('Your submission was successful. Redirecting you to the manuscript page');
+      this.Manuscript_data = new _Manuscript__WEBPACK_IMPORTED_MODULE_0__["default"]();
+      window.location.href = '/' + 'profile/submission/view/' + data.submission.id;
     },
     prepareManuscriptFiles: function prepareManuscriptFiles(event, type) {
       var input = event.target;

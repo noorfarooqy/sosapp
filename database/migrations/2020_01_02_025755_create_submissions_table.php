@@ -20,7 +20,7 @@ class CreateSubmissionsTable extends Migration
             $table->string('submssion_token', 330);
             $table->integer('submission_type');
             $table->string('submission_title', 230);
-            $table->text('submission_abstract', 10000);
+            $table->text('submission_abstract', 120000);
             $table->string('submission_keywords', 1030);
             $table->string('submission_manuscript', 330);
             $table->string('submission_cover', 330);

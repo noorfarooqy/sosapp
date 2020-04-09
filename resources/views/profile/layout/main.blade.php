@@ -21,7 +21,7 @@
   @yield('custom-links')
 </head>
 
-<body id="page-top">
+<body id="page-top" style="font-family: "Times New Roman", Times, serif;">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -77,11 +77,12 @@
           <span>Submissions</span>
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
+          <div class="bg-white py-2 collapse-inner rounded"> 
             <h6 class="collapse-header">Submissions:</h6>
             <a class="collapse-item" href="/profile/submission/new">New </a>
             <a class="collapse-item" href="/profile/submission/accepted">Accepted </a>
             <a class="collapse-item" href="/profile/submission/pending">Pending</a>
+            <a class="collapse-item" href="/profile/submission/resent">Resent</a>
             <a class="collapse-item" href="/profile/submission/rejected">Rejected</a>
           </div>
         </div>
@@ -337,7 +338,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; http://deepbluemedicine.co {{gmdate('Y',time())}}</span>
+            <span>Copyright &copy; http://soscentre.org {{gmdate('Y',time())}}</span>
           </div>
         </div>
       </footer>

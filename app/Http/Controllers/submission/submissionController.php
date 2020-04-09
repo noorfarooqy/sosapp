@@ -10,6 +10,8 @@ use App\models\submissions\submissionAuthorsModel;
 use App\models\submissions\submissionFilesModel;
 use App\models\submissions\submissionsModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use \Auth;
@@ -87,7 +89,6 @@ class submissionController extends Controller
             "submission_manuscript" => $uploaded_manuscript,
             "submission_cover" => $uploaded_cover,
         ]);
-        
 
         foreach ($uploaded_figures as $key => $figure) {
             # code...
@@ -98,8 +99,8 @@ class submissionController extends Controller
                 "submission_file_index" => $key,
             ]);
         }
-        $authors = $request->manuscript_authors;
-
+        $authors = $request->get('manuscript_authors');
+        $saved_authors = [];
         foreach ($authors as $key => $author) {
             # code...
             $author = json_decode($author, true);
@@ -113,9 +114,10 @@ class submissionController extends Controller
                 "author_location" => $author['location'],
                 "author_gender" => $author['gender'],
             ]);
+            array_push($saved_authors, $author);
         }
 
-        $this->Status->setSuccess(["man" => $uploaded_manuscript, "cover" => $uploaded_cover, "figures" => $uploaded_figures]);
+        $this->Status->setSuccess(["submission" => $submission]);
         return $this->Status->getSuccess();
 
     }
@@ -203,7 +205,7 @@ class submissionController extends Controller
         $rules = [
             "mansucript_type" => "required|in:0,1,2,3",
             "manuscript_title" => "required|min:15|max:150",
-            "manuscript_abstract" => "required|min:50|max:1000",
+            "manuscript_abstract" => "required|min:50|max:120000",
             "mansucript_keywords" => "required|min:15|max:230",
             "mansucript_file" => "required|file",
             "mansucript_cover" => "required|file",
@@ -243,7 +245,8 @@ class submissionController extends Controller
     public function openPendingSubmissions(Request $request)
     {
         $user = $request->user();
-        $pending_submission = $user->allSubmissions()->where('submission_status',0)->get();
+        $pending_submission = $user->allSubmissions()->where('submission_status', 0)
+            ->orWhere('submission_status', 1)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
         $has_profile = $user_profile !== null && $user_profile->count() === 1;
@@ -251,19 +254,195 @@ class submissionController extends Controller
         return view('submissions.pending', compact('pending_submission', 'has_profile'));
     }
 
-    public function viewUserSubmission(Request $request, $sub_id)
+    public function openAcceptedSubmissions(Request $request)
     {
         $user = $request->user();
-        $view_sub = $user->allSubmissions()->where([
-            ['user_id',$user->id],
-            ['id', $sub_id]
-        ])->get();
-        if($view_sub->count() <= 0)
-            abort(404);
+        $accepted_submissions = $user->allSubmissions()->where('submission_status', 4)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
         $has_profile = $user_profile !== null && $user_profile->count() === 1;
 
-        return view('submission.view', compact('view_sub', 'has_profile'));
+        return view('submissions.accepted', compact('accepted_submissions', 'has_profile'));
+    }
+    public function openRejectedSubmissions(Request $request)
+    {
+        $user = $request->user();
+        $rejected_submissions = $user->allSubmissions()->where('submission_status', 3)->orderBy('updated_at', 'DESC')->get();
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        return view('submissions.rejected', compact('rejected_submissions', 'has_profile'));
+    }
+    public function openResentSubmissions(Request $request)
+    {
+        $user = $request->user();
+        $resent_submissions = $user->allSubmissions()->where('submission_status', 2)->orderBy('updated_at', 'DESC')->get();
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        return view('submissions.resent', compact('resent_submissions', 'has_profile'));
+    }
+
+    public function viewUserSubmission(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $submission = $view_sub[0];
+        return view('submissions.view', compact('submission', 'has_profile'));
+    }
+
+    public function editManuscript(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $submission = $view_sub[0];
+        return view('submissions.edit_man', compact('submission', 'has_profile'));
+    }
+    public function doEditManuscript(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $rules = [
+            "submission_abstract" => "required|string|max:120000",
+            "submission_keywords" => "required|string|max:230",
+            "submission_manuscript" => "nullable|file|max:20000",
+            "submission_cover" => "nullable|file|max:20000",
+        ];
+        $successmessage = [];
+        $submission = $view_sub[0];
+        // return $submission;
+        $is_valid = $request->validate($rules);
+        $user_profile = $user->profileData;
+        // return $is_valid;
+        if ($request->submission_manuscript != null) {
+            $manu_url = $this->UploadManuscript($request->file('submission_manuscript'), $user_profile);
+            if ($manu_url === false) {
+                // return "we have failed ";
+                return Redirect::back()->withErrors(["submission_manuscript" => $this->FileMananger->getError()])->withInput($is_valid);;
+            }
+
+            // return Redirect::back()->withErrors(["submission_manuscript" => $this->FileMananger->getError()]);
+            else {
+                // return "we are hre";
+                $updated = $submission->update([
+                    "submission_manuscript" => $manu_url,
+                ]);
+                array_push($successmessage,"Successfully updated transcript manuscript file ");
+            }
+        }
+
+        if ($request->submission_cover != null) {
+            $cover_url = $this->UploadManuscript($request->file('submission_cover'), $user_profile);
+            if ($cover_url === false) {
+                return Redirect::back()->withErrors(["submission_cover" => $this->FileMananger->getError()])->withInput($is_valid);
+            } else {
+                $updated = $submission->update([
+                    "submission_cover" => $cover_url,
+                ]);
+                array_push($successmessage,"Successfully updated transcript cover ");
+            }
+        }
+        if (strcmp($request->submission_abstract, ($submission->submission_abstract))) {
+            $updated = $submission->update([
+                "submission_abstract" => $request->submission_abstract,
+            ]);
+            array_push($successmessage,"Successfully updated transcript abstract ");
+        } 
+
+        if (strcmp($request->submission_keywords, ($submission->submission_keywords))) {
+            $updated = $submission->update([
+                "submission_keywords" => $request->submission_keywords,
+            ]);
+            array_push($successmessage,"Successfully updated transcript keywords ");
+        }
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        // return $updated;
+        $submission = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get()[0];
+        return view('submissions.edit_man', compact('submission', 'has_profile', 'successmessage'));
+    }
+
+    public function editManuscriptAuthors(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $submission = $view_sub[0];
+        return view('submissions.edit_authors', compact('submission', 'has_profile'));   
+    }
+
+
+    public function remSubmissionAuthor(Request $request, $sub_id,$author_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $author = submissionAuthorsModel::where([
+            ["submission_id", $sub_id],
+            ["id", $author_id]
+        ])->get();
+        if($view_sub[0]->subAuthors->count() <= 1)
+            return Redirect::back()->withErrors(['error' => 'Can not remove all authors, you must have at least one author']);
+        $successmessage =[];
+        if($author->count() > 0)
+        {
+            $author[0]->delete();
+            array_push($successmessage, "The author has been removed from the list");
+        }
+        $submission = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get()[0];
+        return Redirect::back()->with(['submission' => $submission, 'has_profile' => $has_profile, 'successmessage' => $successmessage ]);   
     }
 }

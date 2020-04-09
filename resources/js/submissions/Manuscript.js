@@ -85,6 +85,7 @@ export default class {
         this.manuscript_authors.forEach(author => {
             
             formData.append('manuscript_authors['+a_count+']', JSON.stringify(author));
+            a_count = a_count +1;
         })
         
         formData.append('mansucript_file', this.manuscript_files.manuscript.src);

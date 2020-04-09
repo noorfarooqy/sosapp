@@ -39,7 +39,7 @@
 
 </head>
 
-<body class="body-class index details">
+<body class="body-class index details" style="font-family: "Times New Roman", Times, serif;">
 	<!--Start Preloader-->
 	<div class="site-preloader">
 		<div class="spinner">

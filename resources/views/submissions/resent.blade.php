@@ -27,13 +27,13 @@
         </div>
         @else
         <div class="card">
-            <div class="card-header bg-info text-white">
+            <div class="card-header bg-warning text-dark">
 
-                Pending Submissions
+                Resent Submissions
             </div>
             <div class="card-body">
                 <div class="row">
-                    @foreach ($pending_submission as $sub)
+                    @foreach ($resent_submissions as $sub)
                         <div class="col-md-4 col-lg-3 col-sm-12 mt-2 col-xs-12 text-center" style="border-bottom:thin solid gray">
                             @php
                                 $files = $sub->subFiles;
@@ -65,8 +65,8 @@
                             
                         </div>
                     @endforeach
-                    @if ($pending_submission->count() <= 0)
-                        There are no pending submissions at the moment
+                    @if ($resent_submissions->count() <= 0)
+                        There are no resent submissions at the moment
                     @endif
                 </div>
             </div>

@@ -27,13 +27,13 @@
         </div>
         @else
         <div class="card">
-            <div class="card-header bg-info text-white">
+            <div class="card-header bg-primary text-white">
 
-                Pending Submissions
+                Accepted Submissions
             </div>
             <div class="card-body">
                 <div class="row">
-                    @foreach ($pending_submission as $sub)
+                    @foreach ($accepted_submissions as $sub)
                         <div class="col-md-4 col-lg-3 col-sm-12 mt-2 col-xs-12 text-center" style="border-bottom:thin solid gray">
                             @php
                                 $files = $sub->subFiles;
@@ -57,16 +57,13 @@
                                 </a>
                             </div>
                             <div class="row justify-content-center">
-                                {{$sub->submissionStatus()}}
-                            </div>
-                            <div class="row justify-content-center">
                                 {{$sub->updated_at}}
                             </div>
                             
                         </div>
                     @endforeach
-                    @if ($pending_submission->count() <= 0)
-                        There are no pending submissions at the moment
+                    @if ($accepted_submissions->count() <= 0)
+                        There are no accepted submissions at the moment
                     @endif
                 </div>
             </div>
