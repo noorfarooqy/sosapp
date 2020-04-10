@@ -41,8 +41,9 @@
             <div class="card-header {{$bg}}">
 
                 <span>
-                    {{$submission->submission_title}} - {{count($authors)}}
+                    {{$submission->submission_title}} 
                 </span>
+                <a href="/profile/submission/view/{{$submission->id}}" class="btn btn-primary float-right">Go back</a>
 
             </div>
             <div class="card-body">
@@ -66,27 +67,11 @@
                 </div>
                 @enderror
                 
-                @error('submission_manuscript')
-                <div class="row">
-                    <div class="alert alert-danger">
-                        
-                        {{$message}}
-                    </div>
-                </div>
-                @enderror
-                @error('submission_cover')
-                <div class="row">
-                    <div class="alert alert-danger">
-                        
-                        {{$message}}
-                    </div>
-                </div>
-                @enderror
                 
                 <form method="POST" action="{{'/profile/submission/edit/authors/'.$submission->id}}" class="row mt-1"
                     enctype="multipart/form-data">
                     
-
+                    @csrf
 
                     <div class="card-body table-responsive">
                         <table class="table table-hover">
@@ -107,7 +92,7 @@
                                     <td>{{$author->author_institute}}</td>
                                     <td>{{$author->author_location}}</td>
                                     <td>
-                                        <a href="/profile/submission/re/{{$submission->id}}/{{$author->id}}" class="btn btn-danger" > - Delete </a >
+                                        <a href="/profile/submission/re/author/{{$submission->id}}/{{$author->id}}" class="btn btn-danger" > - Delete </a >
                                     </td>
                                 </tr>
                                 @endforeach
@@ -116,47 +101,99 @@
                         </table>
 
                         <hr>
-                        <div class="form-group row">
-                            <div class="col-md-6 col-lg-6">
-                                <input type="text" class="form-control" name="author_firstname"
-                                placeholder="Enter Author first name" >
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                Add new author
                             </div>
-                            <div class="col-md-6 col-lg-6">
-                                <input type="text" class="form-control" name="author_secondname"
-                                placeholder="Enter Author second name">
+                            <div class="card-body">
+
+                                <div class="form-group row">
+                                    <div class="col-md-4 col-lg-4">
+                                        <input type="text" class="form-control" name="author_firstname"
+                                         placeholder="Enter Author first name" value="{{old('author_firstname')}}">
+                                        @error('author_firstname')
+                                        <div class="alert alert-danger">
+                                            
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    
+                                    <div class="col-md-4 col-lg-4">
+                                        <input type="text" class="form-control" name="author_secondname"
+                                        placeholder="Enter Author second name" value="{{old('author_secondname')}}">
+                                        @error('author_secondname')
+                                        <div class="alert alert-danger">
+                                            
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" name="author_email"
+                                                placeholder="Enter Author email" value="{{old('author_email')}}">
+                                                @error('author_email')
+                                                <div class="alert alert-danger">
+                                                    
+                                                    {{$message}}
+                                                </div>
+                                                @enderror
+                                        </div>
+                                    </div>
+        
+                                    
+                                </div>
+        
+        
+                                
+                                <div class="form-group row">
+        
+                                    <div class="col-md-4 col-lg-4">
+                                        <input type="text" class="form-control" name="author_institution"
+                                        placeholder="Enter Author institution" value="{{old('author_institution')}}">
+                                        @error('author_institution')
+                                        <div class="alert alert-danger">
+                                            
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-lg-4">
+                                        <input type="text" class="form-control" name="author_location"
+                                        placeholder="Enter Author country" value="{{old('author_location')}}">
+                                        @error('author_location')
+                                        <div class="alert alert-danger">
+                                            
+                                            {{$message}}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <select class="form-control" name="author_sex">
+                                                <option value="-1">Select author sex</option>
+                                                <option value="0">Male</option>
+                                                <option value="1">Female</option>
+                                            </select>
+                                            @error('author_sex')
+                                            <div class="alert alert-danger">
+                                                
+                                                {{$message}}
+                                            </div>
+                                            @enderror
+                
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+        
+                                
+                                <div class="form-group text-center">
+                                    <button type="submit" class="btn btn-success"> Add author</button>
+                                </div>
                             </div>
-
-                            
-                        </div>
-
-
-                        <div class="form-group">
-                            <input type="email" class="form-control" name="author_email"
-                                placeholder="Enter Author email">
-                        </div>
-                        <div class="form-group row">
-
-                            <div class="col-md-8 col-lg-8">
-                                <input type="text" class="form-control" name="author_institution"
-                                placeholder="Enter Author institution">
-                            </div>
-                            <div class="col-md-4 col-lg-4">
-                                <input type="text" class="form-control" name="author_location"
-                                placeholder="Enter Author country">
-                            </div>
-                            
-                        </div>
-
-                        <div class="form-group">
-                            <select class="form-control" name="author_sex">
-                                <option value="-1">Select author sex</option>
-                                <option value="0">Male</option>
-                                <option value="1">Female</option>
-                            </select>
-
-                        </div>
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-success"> Add author</button>
                         </div>
 
                     </div>

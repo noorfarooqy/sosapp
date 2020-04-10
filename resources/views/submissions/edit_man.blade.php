@@ -43,6 +43,7 @@
                 <span>
                     {{$submission->submission_title}}
                 </span>
+                <a href="/profile/submission/view/{{$submission->id}}" class="btn btn-primary float-right">Go back</a>
 
             </div>
             <div class="card-body">

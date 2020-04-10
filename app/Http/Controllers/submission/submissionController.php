@@ -10,7 +10,6 @@ use App\models\submissions\submissionAuthorsModel;
 use App\models\submissions\submissionFilesModel;
 use App\models\submissions\submissionsModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -129,7 +128,6 @@ class submissionController extends Controller
             "image/jpg",
             "image/png",
             "image/jpeg",
-            "image/tif",
         ]);
 
         $this->FileMananger->setPath($path);
@@ -347,7 +345,7 @@ class submissionController extends Controller
             $manu_url = $this->UploadManuscript($request->file('submission_manuscript'), $user_profile);
             if ($manu_url === false) {
                 // return "we have failed ";
-                return Redirect::back()->withErrors(["submission_manuscript" => $this->FileMananger->getError()])->withInput($is_valid);;
+                return Redirect::back()->withErrors(["submission_manuscript" => $this->FileMananger->getError()])->withInput($is_valid);
             }
 
             // return Redirect::back()->withErrors(["submission_manuscript" => $this->FileMananger->getError()]);
@@ -356,7 +354,7 @@ class submissionController extends Controller
                 $updated = $submission->update([
                     "submission_manuscript" => $manu_url,
                 ]);
-                array_push($successmessage,"Successfully updated transcript manuscript file ");
+                array_push($successmessage, "Successfully updated transcript manuscript file ");
             }
         }
 
@@ -368,21 +366,21 @@ class submissionController extends Controller
                 $updated = $submission->update([
                     "submission_cover" => $cover_url,
                 ]);
-                array_push($successmessage,"Successfully updated transcript cover ");
+                array_push($successmessage, "Successfully updated transcript cover ");
             }
         }
         if (strcmp($request->submission_abstract, ($submission->submission_abstract))) {
             $updated = $submission->update([
                 "submission_abstract" => $request->submission_abstract,
             ]);
-            array_push($successmessage,"Successfully updated transcript abstract ");
-        } 
+            array_push($successmessage, "Successfully updated transcript abstract ");
+        }
 
         if (strcmp($request->submission_keywords, ($submission->submission_keywords))) {
             $updated = $submission->update([
                 "submission_keywords" => $request->submission_keywords,
             ]);
-            array_push($successmessage,"Successfully updated transcript keywords ");
+            array_push($successmessage, "Successfully updated transcript keywords ");
         }
 
         $has_profile = $user_profile !== null && $user_profile->count() === 1;
@@ -409,11 +407,125 @@ class submissionController extends Controller
         $has_profile = $user_profile !== null && $user_profile->count() === 1;
 
         $submission = $view_sub[0];
-        return view('submissions.edit_authors', compact('submission', 'has_profile'));   
+        return view('submissions.edit_authors', compact('submission', 'has_profile'));
+    }
+    public function doEditManuscriptAuthors(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $submission = $view_sub[0];
+
+        $rules = [
+            "author_firstname" => "required|string|max:45",
+            "author_secondname" => "required|string|max:45",
+            "author_email" => "required|email|max:45",
+            "author_institution" => "required|string|max:75",
+            "author_location" => "required|string|max:45",
+            "author_sex" => "required|integer|in:0,1",
+        ];
+        $is_valid = $request->validate($rules);
+        $author_exists = submissionAuthorsModel::where("author_email", $request->author_email)->exists();
+        if ($author_exists) {
+            return Redirect::back()->withErrors(["author_email" => "The author email exists."])->withInput($is_valid);
+        }
+
+        $sub_authors = submissionAuthorsModel::create([
+            "submission_id" => $submission->id,
+            "submission_token" => $submission->submssion_token,
+            "author_firstname" => $request->author_firstname,
+            "author_secondname" => $request->author_secondname,
+            "author_email" => $request->author_email,
+            "author_institute" => $request->author_institution,
+            "author_location" => $request->author_location,
+            "author_gender" => $request->author_sex,
+        ]);
+        $submission = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get()[0];
+        return view('submissions.edit_authors', compact('submission', 'has_profile'));
     }
 
 
-    public function remSubmissionAuthor(Request $request, $sub_id,$author_id)
+    public function editManuscriptFiles(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        // phpinfo();
+        $submission = $view_sub[0];
+        return view('submissions.edit_figures', compact('submission', 'has_profile'));
+    }
+
+    public function doEditManuscriptFiles(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $submission = $view_sub[0];
+        $rules = [
+            "submission_figures" => "required|file|max:10000"
+        ];
+        $is_valid = $request->validate($rules);
+        $paths = explode("/", $submission->submission_manuscript);
+        $submision_folder = $paths[count($paths)-2];
+        $path = "uploads/" . $user_profile->user_token . "/submissions/$submision_folder/";
+        $this->FileMananger->setExtension([
+            "image/jpg",
+            "image/png",
+            "image/jpeg",
+        ]);
+
+        $this->FileMananger->setPath($path);
+        $uploaded_figures = [];
+        $is_uploaded = $this->FileMananger->uploadFile($request->file('submission_figures'));
+        if(!$is_uploaded)
+            return Redirect::back()->withErrors(["submission_figures" => $this->FileMananger->getError()]);
+        $num_files = $submission->subFiles->count();
+        $added = submissionFilesModel::create([
+            "submission_id" => $submission->id,
+            "submission_token" => $submission->submssion_token,
+            "submission_file" => $is_uploaded,
+            "submission_file_index" => $num_files,
+
+        ]);
+        $submission = $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get()[0];
+
+        return view('submissions.edit_figures', compact('submission', 'has_profile'));
+    }
+
+    public function remSubmissionAuthor(Request $request, $sub_id, $author_id)
     {
         $user = $request->user();
         $view_sub = $user->allSubmissions()->where([
@@ -429,13 +541,14 @@ class submissionController extends Controller
 
         $author = submissionAuthorsModel::where([
             ["submission_id", $sub_id],
-            ["id", $author_id]
+            ["id", $author_id],
         ])->get();
-        if($view_sub[0]->subAuthors->count() <= 1)
+        if ($view_sub[0]->subAuthors->count() <= 1) {
             return Redirect::back()->withErrors(['error' => 'Can not remove all authors, you must have at least one author']);
-        $successmessage =[];
-        if($author->count() > 0)
-        {
+        }
+
+        $successmessage = [];
+        if ($author->count() > 0) {
             $author[0]->delete();
             array_push($successmessage, "The author has been removed from the list");
         }
@@ -443,6 +556,69 @@ class submissionController extends Controller
             ['user_id', $user->id],
             ['id', $sub_id],
         ])->get()[0];
-        return Redirect::back()->with(['submission' => $submission, 'has_profile' => $has_profile, 'successmessage' => $successmessage ]);   
+        return Redirect::back()->with(['submission' => $submission, 'has_profile' => $has_profile, 'successmessage' => $successmessage]);
+    }
+    public function remSubmissionFigure(Request $request, $sub_id, $figure_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+
+        $figures = submissionFilesModel::where([
+            ["submission_id", $sub_id]
+        ])->get();
+        if ($figures->count() <= 1) {
+            return Redirect::back()->withErrors(['error' => 'Can not remove all figures, you must have at least one figure']);
+        }
+        $figure = submissionFilesModel::where([
+            ['id', $figure_id],
+            ['submission_id', $sub_id],
+        ])->get();
+        $successmessage = [];
+        if ($figure->count() > 0) {
+            $figure[0]->delete();
+            array_push($successmessage, "The figure has been removed from the list");
+        }
+        $submission = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get()[0];
+        return Redirect::back()->with(['submission' => $submission, 'has_profile' => $has_profile, 'successmessage' => $successmessage]);
+    }
+
+
+    public function ResubmitUserSubmission(Request $request, $sub_id)
+    {
+        $user = $request->user();
+        $view_sub = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get();
+        if ($view_sub->count() <= 0) {
+            abort(404);
+        }
+        $user_profile = $user->profileData;
+
+        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        if($view_sub[0]->submission_status !== 2)
+            return Redirect::back()->withErrors(["submission" => "Cannot resubmit this submission"]);
+        $view_sub[0]->update([
+            "submission_status" => 0,
+        ]);
+        $successmessage = [];
+        array_push($successmessage, "successfully resent the submission");
+        $submission = $user->allSubmissions()->where([
+            ['user_id', $user->id],
+            ['id', $sub_id],
+        ])->get()[0];
+        return Redirect::back()->with(['submission' => $submission, 'has_profile' => $has_profile, 'successmessage' => $successmessage]);
     }
 }

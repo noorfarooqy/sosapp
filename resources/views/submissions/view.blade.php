@@ -26,6 +26,29 @@
             </div>
         </div>
         @else
+
+        @if (isset($successmessage))
+        @foreach ($successmessage as $success)
+        <div class="row">
+            <div class="alert alert-success">
+                
+                {{$success}}
+            </div>
+        </div>
+        @endforeach
+        
+        @endif
+        @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            
+        <div class="row">
+            <div class="alert alert-danger">
+                
+                {{$error}}
+            </div>
+        </div>
+        @endforeach
+        @endif
         <div class="card">
             @php
                 $authors = $submission->subAuthors;
@@ -51,6 +74,14 @@
                       <a class="dropdown-item" href="/profile/submission/edit/manuscript/{{$submission->id}}">Edit manuscript</a>
                       <a class="dropdown-item" href="/profile/submission/edit/authors/{{$submission->id}}">Edit Authors</a>
                       <a class="dropdown-item" href="/profile/submission/edit/figures/{{$submission->id}}">Edit figures</a>
+                      @if ($submission->submission_status === 2)
+                      <form action="/profile/submission/resubmit/{{$submission->id}}" method="POST">
+                        @csrf
+                        <input type="text" value="{{$submission->id}}" name="submission" style="display:none">
+                        <input type="submit" class="btn btn-primary col-md-12" value="Resubmit">
+                    </form>
+                      @endif
+                      
                     </div>
                 </span>
                 @else
