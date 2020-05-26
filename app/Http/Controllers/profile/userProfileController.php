@@ -32,7 +32,7 @@ class userProfileController extends Controller
     {
         $profile = $request->user();
         $profile_data = $profile->profileData;
-        if ($profile_data !== null && $profile_data->count() === 1) {
+        if ($profile_data !== null && $profile_data->count() >= 1) {
             return view('profile.profile.details', compact('profile_data'));
         }
         return view('profile.profile.details');
@@ -98,7 +98,7 @@ class userProfileController extends Controller
         $profile_data = $profile->profileData;
         if ($profile_data == null || $profile_data->count() <= 0) {
             $this->Status->setError(["The profile is not set "]);
-            return $this->Error->getError();
+            return $this->Status->getError();
         }
 
         $this->Status->setSuccess([
@@ -108,7 +108,7 @@ class userProfileController extends Controller
                 "email" => $profile->email,
                 "location" => $profile_data->living_country,
                 "institute" => $profile_data->institute,
-                "gender" => $profile_data->gender 
+                "gender" => $profile_data->gender,
             ],
         ]);
         return $this->Status->getSuccess();

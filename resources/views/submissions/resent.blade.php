@@ -49,12 +49,22 @@
                                 @php
                                     $title = substr($sub->submission_title, 0,35)
                                 @endphp
+                                @if (Auth::user()->IsAdmin())
+                                <a href="/admin/submission/view/{{$sub->id}}">
+                                    {{$title}}
+                                    @if (strlen($title) > 35)
+                                        ...
+                                    @endif
+                                </a>
+                                @else
                                 <a href="/profile/submission/view/{{$sub->id}}">
                                     {{$title}}
                                     @if (strlen($title) > 35)
                                         ...
                                     @endif
                                 </a>
+                                @endif
+                                
                             </div>
                             <div class="row justify-content-center">
                                 {{$sub->submissionStatus()}}

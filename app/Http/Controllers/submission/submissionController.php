@@ -33,7 +33,7 @@ class submissionController extends Controller
         $user = Auth::user();
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
         return view('submissions.new_submission', compact('has_profile'));
     }
 
@@ -247,7 +247,7 @@ class submissionController extends Controller
             ->orWhere('submission_status', 1)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         return view('submissions.pending', compact('pending_submission', 'has_profile'));
     }
@@ -258,7 +258,7 @@ class submissionController extends Controller
         $accepted_submissions = $user->allSubmissions()->where('submission_status', 4)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         return view('submissions.accepted', compact('accepted_submissions', 'has_profile'));
     }
@@ -268,7 +268,7 @@ class submissionController extends Controller
         $rejected_submissions = $user->allSubmissions()->where('submission_status', 3)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         return view('submissions.rejected', compact('rejected_submissions', 'has_profile'));
     }
@@ -278,7 +278,7 @@ class submissionController extends Controller
         $resent_submissions = $user->allSubmissions()->where('submission_status', 2)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         return view('submissions.resent', compact('resent_submissions', 'has_profile'));
     }
@@ -296,7 +296,7 @@ class submissionController extends Controller
 
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $submission = $view_sub[0];
         return view('submissions.view', compact('submission', 'has_profile'));
@@ -314,7 +314,7 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $submission = $view_sub[0];
         return view('submissions.edit_man', compact('submission', 'has_profile'));
@@ -383,7 +383,7 @@ class submissionController extends Controller
             array_push($successmessage, "Successfully updated transcript keywords ");
         }
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
         // return $updated;
         $submission = $user->allSubmissions()->where([
             ['user_id', $user->id],
@@ -404,7 +404,7 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $submission = $view_sub[0];
         return view('submissions.edit_authors', compact('submission', 'has_profile'));
@@ -421,7 +421,7 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $submission = $view_sub[0];
 
@@ -456,7 +456,6 @@ class submissionController extends Controller
         return view('submissions.edit_authors', compact('submission', 'has_profile'));
     }
 
-
     public function editManuscriptFiles(Request $request, $sub_id)
     {
         $user = $request->user();
@@ -469,7 +468,7 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         // phpinfo();
         $submission = $view_sub[0];
@@ -488,15 +487,15 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $submission = $view_sub[0];
         $rules = [
-            "submission_figures" => "required|file|max:10000"
+            "submission_figures" => "required|file|max:10000",
         ];
         $is_valid = $request->validate($rules);
         $paths = explode("/", $submission->submission_manuscript);
-        $submision_folder = $paths[count($paths)-2];
+        $submision_folder = $paths[count($paths) - 2];
         $path = "uploads/" . $user_profile->user_token . "/submissions/$submision_folder/";
         $this->FileMananger->setExtension([
             "image/jpg",
@@ -507,8 +506,10 @@ class submissionController extends Controller
         $this->FileMananger->setPath($path);
         $uploaded_figures = [];
         $is_uploaded = $this->FileMananger->uploadFile($request->file('submission_figures'));
-        if(!$is_uploaded)
+        if (!$is_uploaded) {
             return Redirect::back()->withErrors(["submission_figures" => $this->FileMananger->getError()]);
+        }
+
         $num_files = $submission->subFiles->count();
         $added = submissionFilesModel::create([
             "submission_id" => $submission->id,
@@ -537,7 +538,7 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $author = submissionAuthorsModel::where([
             ["submission_id", $sub_id],
@@ -570,10 +571,10 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
         $figures = submissionFilesModel::where([
-            ["submission_id", $sub_id]
+            ["submission_id", $sub_id],
         ])->get();
         if ($figures->count() <= 1) {
             return Redirect::back()->withErrors(['error' => 'Can not remove all figures, you must have at least one figure']);
@@ -594,7 +595,6 @@ class submissionController extends Controller
         return Redirect::back()->with(['submission' => $submission, 'has_profile' => $has_profile, 'successmessage' => $successmessage]);
     }
 
-
     public function ResubmitUserSubmission(Request $request, $sub_id)
     {
         $user = $request->user();
@@ -607,9 +607,11 @@ class submissionController extends Controller
         }
         $user_profile = $user->profileData;
 
-        $has_profile = $user_profile !== null && $user_profile->count() === 1;
-        if($view_sub[0]->submission_status !== 2)
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
+        if ($view_sub[0]->submission_status !== 2) {
             return Redirect::back()->withErrors(["submission" => "Cannot resubmit this submission"]);
+        }
+
         $view_sub[0]->update([
             "submission_status" => 0,
         ]);

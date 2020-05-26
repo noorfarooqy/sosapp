@@ -39,6 +39,19 @@ Route::middleware(['auth'])->group(function () {
 
         });
     });
+
+    Route::middleware(['admin'])->group(function () {
+        Route::prefix('admin')->group(function () {
+            Route::prefix('submission')->group(function () {
+                Route::get('/view/{id}', 'admin\AdminController@viewUserPaper');
+                Route::get('/accepted', 'admin\AdminController@OpenAcceptedPapers');
+                Route::get('/rejected', 'admin\AdminController@openRejectedPapers');
+                Route::get('/resent', 'admin\AdminController@openResentPapers');
+                Route::get('/pending', 'admin\AdminController@openPendingPapers');
+            });
+        });
+    });
+    
 });
 
 Route::get('/', 'home\guestRequestController@getHomePage')->name('homePage');
