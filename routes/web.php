@@ -48,10 +48,15 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/rejected', 'admin\AdminController@openRejectedPapers');
                 Route::get('/resent', 'admin\AdminController@openResentPapers');
                 Route::get('/pending', 'admin\AdminController@openPendingPapers');
+                Route::prefix('/status')->group(function () {
+                    Route::post('/review/{sub_id}', 'admin\AdminController@SetStatusReview');
+                    Route::get('/resend/{sub_id}', 'admin\AdminController@ResendSubmissionPage');
+                    Route::get('/reject/{sub_id}', 'admin\AdminController@RejectSubmissionPage');
+                });
             });
         });
     });
-    
+
 });
 
 Route::get('/', 'home\guestRequestController@getHomePage')->name('homePage');
