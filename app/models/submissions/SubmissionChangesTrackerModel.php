@@ -19,7 +19,7 @@ class SubmissionChangesTrackerModel extends Model
         "changed_by"
     ];
 
-    public function UpdateStatus($source, $target, $submission,$comment=null,$file=null)
+    public function UpdateStatus($source, $target, $submission, $comment = null, $file = null)
     {
         return $this->create([
             "submission_id" => $submission,
@@ -30,8 +30,5 @@ class SubmissionChangesTrackerModel extends Model
             "changed_by" => Auth::user()->id,
 
         ]);
-
     }
-
-    
 }

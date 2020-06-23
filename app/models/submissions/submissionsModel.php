@@ -22,27 +22,33 @@ class submissionsModel extends Model
     {
         return $this->hasMany(submissionAuthorsModel::class, 'submission_id', 'id');
     }
-    public function submissionStatus()
+    public function submissionStatus($status = null)
     {
-        if ($this->submission_status === $this->status_pending) {
+        if ($status == null)
+            $status = $this->submission_status;
+        if ($status === $this->status_pending) {
             return "Pending for review";
-        } else if ($this->submission_status === $this->status_under_review) {
+        } else if ($status === $this->status_under_review) {
             return "Under review";
-        } else if ($this->submission_status === $this->status_resent) {
+        } else if ($status === $this->status_resent) {
             return "Resent";
-        } else if ($this->submission_status === $this->status_reject) {
+        } else if ($status === $this->status_reject) {
             return "Rejected";
-        } else if ($this->submission_status === $this->status_published) {
+        } else if ($status === $this->status_published) {
             return "Published";
         } else {
             return "Unknown status";
         }
-
     }
     public function UpdateStatusTracker($status)
     {
         $TrackerModel = new SubmissionChangesTrackerModel();
-        return $TrackerModel->UpdateStatus($this->submission_status, $status,$this->id);
+        return $TrackerModel->UpdateStatus($this->submission_status, $status, $this->id);
+    }
+
+    public function SubmissionChanges()
+    {
+        return $this->hasMany(SubmissionChangesTrackerModel::class, 'submission_id', 'id');
     }
 
     public $status_pending = 0;
@@ -50,5 +56,4 @@ class submissionsModel extends Model
     public $status_resent = 2;
     public $status_reject = 3;
     public $status_published = 4;
-
 }

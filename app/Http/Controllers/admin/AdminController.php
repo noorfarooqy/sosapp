@@ -3,16 +3,23 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\models\submissions\SubmissionChangesTrackerModel;
 use App\models\submissions\submissionsModel;
 use App\Notifications\submission\SubmissionUnderReviewNotification;
+use App\Notifications\submission\ResendSubmissionNotification;
 use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class AdminController extends Controller
 {
     //
-
+    protected $error_message;
+    public function __construct()
+    {
+        $this->error_message = null;
+    }
     public function OpenAcceptedPapers(Request $request)
     {
         $user = $request->user();
@@ -91,7 +98,7 @@ class AdminController extends Controller
 
         $rule = ["submission" => "required|integer|exists:submissions,id"];
         $data = $request->validate($rule);
-        
+
         if ($sub_id != $request->submission) {
             return Redirect::back()->withErrors(['submission' => 'Sorry. The submission provided do not match with the submitted form']);
         }
@@ -101,7 +108,7 @@ class AdminController extends Controller
         ])->get();
         abort_if($view_sub->count() <= 0, 404);
         $submitter = User::where("id", $view_sub[0]->user_id)->get();
-        if($submitter == null || $submitter->count() <= 0)
+        if ($submitter == null || $submitter->count() <= 0)
             return Redirect::back()->withErrors(['submission' => 'Could not find the user who submitted this paper']);
         $updated_sub = $view_sub[0]->update(["submission_status" => $view_sub[0]->status_under_review]);
         $submitter[0]->notify(new SubmissionUnderReviewNotification($submitter[0], $view_sub[0]));
@@ -117,10 +124,53 @@ class AdminController extends Controller
 
     public function RejectSubmissionPage(Request $request, $sub_id)
     {
-        return $this->ResendRejectValidation($request, $sub_id,3);
+        return $this->ResendRejectValidation($request, $sub_id, 3);
     }
 
-    protected function ResendRejectValidation($request, $sub_id, $status=2)
+    protected function ResendRejectValidation($request, $sub_id, $status = 2)
+    {
+        $profile = $this->CheckSubmissionAndAdmin($request, $sub_id);
+        // return $user_profile;
+        abort_if($profile == null, 404);
+        if (!$profile)
+            return Redirect::back()->withErrors(['submission' => $this->error_message]);
+        else {
+            $user_profile = $profile[0];
+            $view_sub = $profile[1];
+        }
+
+        if ($user_profile == null) {
+            return Redirect::back()->withErrors(['submission'  => 'Could not find data on the profile']);
+        } else if ($view_sub == null) {
+            return Redirect::back()->withErrors(['submission'  => 'Could not find data on the submission']);
+        }
+        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
+
+        $submission = $view_sub[0];
+        if ($status == 2)
+            return view('submissions.resend', compact('submission', 'has_profile'));
+        else if ($status == 3)
+            return view('submissions.reject', compact('submission', 'has_profile'));
+        else
+            abort(404);
+    }
+
+    public function PublishSubmissionPage(Request $request, $sub_id)
+    {
+        $user_profile = $this->CheckSubmissionAndAdmin($request, $sub_id);
+
+        abort_if($user_profile == null, 404);
+        if ($user_profile == false)
+            return Redirect::back()->withErrors(['submission' => $this->error_message]);
+        else {
+            $user_profile = $user_profile[0];
+            $submission = $user_profile[1][0];
+        }
+
+        return view('submissions.publish', compact('submission', 'has_profile'));
+    }
+
+    public function CheckSubmissionAndAdmin($request, $sub_id)
     {
         $user = $request->user();
         $admin = $user->AdminInfo;
@@ -129,23 +179,72 @@ class AdminController extends Controller
             ['id', $sub_id],
         ])->get();
         if ($view_sub->count() <= 0) {
-            abort(404);
+            // abort(404);
+            return null;
         }
 
         $submitter = User::where("id", $view_sub[0]->user_id)->get();
-        if($submitter == null || $submitter->count() <= 0)
-            return Redirect::back()->withErrors(['submission' => 'Could not find the user who submitted this paper']);
+        if ($submitter == null || $submitter->count() <= 0) {
+            $this->error_message = 'Could not find the user who submitted this paper';
+            return false;
+        }
+        // return Redirect::back()->withErrors(['submission' => 'Could not find the user who submitted this paper']);
         $user_profile = $user->profileData;
+        return [$user_profile, $view_sub, $submitter];
+    }
 
-        $has_profile = $user_profile !== null && $user_profile->count() >= 1;
+    public function ResendSubmissionPaper(Request $request, $sub_id)
+    {
+        $profile = $this->CheckSubmissionAndAdmin($request, $sub_id);
+        abort_if($profile == null, 404);
+        if ($profile == false)
+            return Redirect::back()->withErrors(['submission' => $this->error_message]);
+        else {
+            $user_profile = $profile[0];
+            $submission = $profile[1][0];
+            $submitter = $profile[2][0];
+        }
+        $status = $submission->submission_status;
+        if ($status != $submission->status_pending && $status != $submission->status_under_review) {
+            return Redirect::back()->withErrors(['submission' => 'The submission status cannot be resent']);
+        }
 
-        $submission = $view_sub[0];
-        if($status ==2)
-            return view('submissions.resend', compact('submission', 'has_profile'));
-        else if ($status == 3)
-            return view('submissions.reject', compact('submission', 'has_profile'));
-        else
-            abort(404);
+        $rules = [
+            "comment" => "required|string|max:1200|min:3",
+            "resendFile" => "required|file|mimes:doc,docx"
+        ];
 
+        $data = $request->validate($rules);
+        $path = "uploads/submission/" . $submission->submission_token . '/files/';
+        try {
+            $upload_url = $request->file('resendFile')->store($path, 'public');
+        } catch (Exception $th) {
+            return Redirect::back()->withErrors(['resendFile', $th->getMessage()]);
+        }
+
+        $data["resendFile"] = "/storage/$upload_url";
+
+        $SubmissionTracker = new SubmissionChangesTrackerModel();
+        $new_status = $SubmissionTracker->UpdateStatus(
+            $status,
+            $submission->status_resent,
+            $submission->id,
+            $request->comment,
+            $data["resendFile"]
+        );
+
+        if (!$new_status)
+            return Redirect::back()->withErrors(['submission' => $SubmissionTracker->getError()]);
+        $submission->update(['submission_status' => $submission->status_resent]);
+        try {
+            $submitter->notify(new ResendSubmissionNotification($submitter, $submission));
+        } catch (Exception $th) {
+            $new_status->delete();
+            $submission->update(['submission_status' => $status]);
+            return Redirect::back()->withErrors([
+                'submission' => "Could not send the notification to the users . " . $th->getMessage()
+            ]);
+        }
+        return redirect()->route('view_paper_submission', ['id' => $sub_id])->with('success', 'Successfully resent submission');
     }
 }

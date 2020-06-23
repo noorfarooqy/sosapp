@@ -36,14 +36,13 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/resent', 'submission\submissionController@openResentSubmissions')->name('openPendingSubmissions');
                 Route::get('/rejected', 'submission\submissionController@openRejectedSubmissions')->name('openPendingSubmissions');
             });
-
         });
     });
 
     Route::middleware(['admin'])->group(function () {
         Route::prefix('admin')->group(function () {
             Route::prefix('submission')->group(function () {
-                Route::get('/view/{id}', 'admin\AdminController@viewUserPaper');
+                Route::get('/view/{id}', 'admin\AdminController@viewUserPaper')->name('view_paper_submission');
                 Route::get('/accepted', 'admin\AdminController@OpenAcceptedPapers');
                 Route::get('/rejected', 'admin\AdminController@openRejectedPapers');
                 Route::get('/resent', 'admin\AdminController@openResentPapers');
@@ -51,12 +50,13 @@ Route::middleware(['auth'])->group(function () {
                 Route::prefix('/status')->group(function () {
                     Route::post('/review/{sub_id}', 'admin\AdminController@SetStatusReview');
                     Route::get('/resend/{sub_id}', 'admin\AdminController@ResendSubmissionPage');
+                    Route::post('/resend/{sub_id}', 'admin\AdminController@ResendSubmissionPaper');
                     Route::get('/reject/{sub_id}', 'admin\AdminController@RejectSubmissionPage');
+                    Route::get('/publish/{sub_id}', 'admin\AdminController@PublishSubmissionPage');
                 });
             });
         });
     });
-
 });
 
 Route::get('/', 'home\guestRequestController@getHomePage')->name('homePage');

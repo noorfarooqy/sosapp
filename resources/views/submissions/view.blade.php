@@ -218,17 +218,33 @@
                                 Activities on this submission
                             </div>
                             <div class="card-body">
-                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                @php
+                                    $changes = $submission->SubmissionChanges;
+                                @endphp
+                                @foreach ($changes as $change)
+                                <a class="dropdown-item d-flex align-items-center" href="#" style="white-space: unset">
                                     <div class="mr-3">
                                       <div class="icon-circle bg-primary">
                                         <i class="fas fa-file-alt text-white"></i>
                                       </div>
                                     </div>
                                     <div>
-                                      <div class="small text-gray-500">December 12, 2019</div>
-                                      <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                      <div class="small text-gray-500">{{$change->updated_at}}</div>
+                                      <div class="text">
+                                          Submission status has been changed from 
+                                      <span class="font-weight-bold">
+                                          {{$submission->submissionStatus($change->source_status)}}
+                                      </span>
+                                      to 
+                                      <span class="font-weight-bold">
+                                          {{$submission->submissionStatus($change->target_status)}}
+                                      </span>
+                                      </div>
+                                      
                                     </div>
-                                  </a>
+                                </a>
+                                @endforeach
+                                
                             </div>
                         </div>
                     </div>

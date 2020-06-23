@@ -25,22 +25,26 @@
         </div>
         @else
 
-        @if (Session::has('success'))
-        
+        @if (isset($successmessage))
+        @foreach ($successmessage as $success)
+        <div class="row">
             <div class="alert alert-success">
 
-                {{Session::get('success')}}
+                {{$success}}
             </div>
-        
+        </div>
+        @endforeach
 
         @endif
         @if ($errors->any())
         @foreach ($errors->all() as $error)
 
+        <div class="row">
             <div class="alert alert-danger">
 
                 {{$error}}
             </div>
+        </div>
         @endforeach
         @endif
         <div class="card">
@@ -63,8 +67,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <form action="" method="post" class=" col-md-10 col-lg-10" enctype="multipart/form-data">
-                        @csrf
+                    <form action="" method="post" class=" col-md-10 col-lg-10">
                         <div class="form-group">
                             <label for="comment">Comment*</label>
                             <textarea name="comment" style="resize: none"
