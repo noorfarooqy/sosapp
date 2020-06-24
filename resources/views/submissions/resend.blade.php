@@ -63,7 +63,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <form action="" method="post" class=" col-md-10 col-lg-10" enctype="multipart/form-data">
+                    <form action="/admin/submission/status/update/{{$submission->id}}/2" method="post" class=" col-md-10 col-lg-10" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="comment">Comment*</label>
@@ -72,8 +72,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="resendFile">Resend Reason file *</label>
-                            <input type="file" class="form-control" name="resendFile">
+                            <label for="updateFile">Resend Reason file *</label>
+                            <input type="file" class="form-control" name="updateFile">
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Resend submission" class="btn btn-primary">

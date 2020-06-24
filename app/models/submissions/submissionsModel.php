@@ -3,6 +3,8 @@
 namespace App\models\submissions;
 
 use App\models\submissions\submissionFilesModel;
+use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class submissionsModel extends Model
@@ -21,6 +23,10 @@ class submissionsModel extends Model
     public function subAuthors()
     {
         return $this->hasMany(submissionAuthorsModel::class, 'submission_id', 'id');
+    }
+    public function Submitter()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
     public function submissionStatus($status = null)
     {
@@ -48,8 +54,13 @@ class submissionsModel extends Model
 
     public function SubmissionChanges()
     {
-        return $this->hasMany(SubmissionChangesTrackerModel::class, 'submission_id', 'id');
+        return $this->hasMany(SubmissionChangesTrackerModel::class, 'submission_id', 'id')->latest();
     }
+    public function publishInformation()
+    {
+        return $this->hasMany(SubmissionChangesTrackerModel::class, 'submission_id', 'id')->where('target_status', 4);
+    }
+
 
     public $status_pending = 0;
     public $status_under_review = 1;

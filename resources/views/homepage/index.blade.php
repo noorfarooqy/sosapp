@@ -12,16 +12,16 @@
         <div class="row ">
             <div class="col-lg-12">
                 <div class="row">
-                    <div class="col-lg-8" >
+                    <div class="col-lg-8">
                         <div class="box breadcumb" id="banner" style="min-height:350px; color:white">
-                            
+
                             <div class="p-5">
                                 <span>Think Big & Get Rewards</span>
-                            <h1 style="color:white">Somali Studies Centre</h1>
+                                <h1 style="color:white">Somali Studies Centre</h1>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 text-center" >
+                    <div class="col-lg-4 text-center">
                         <div class="box" style="min-height:350px;border: thin solid gray;background-color: aliceblue;">
                             <div class="header d-flex justify-content-between" style="background-color:#47b502">
                                 <p style="line-height: 40px;padding-left: 10px;color: white;">
@@ -38,11 +38,11 @@
                     </div>
                 </div>
             </div>
-            
-                
+
+
         </div>
     </div>
-    
+
 </section>
 <!-- Home Page Banner Area End -->
 
@@ -56,68 +56,58 @@
                         <div class="box">
                             <div class="header d-flex justify-content-between">
                                 <p>
-                                    <i class="fas fa-dollar-sign"></i>
+                                    <i class="fas fa-chart-line"></i>
                                     Top Trending Papers
                                 </p>
                             </div>
                             <div class="list">
                                 <ul>
+                                    @php
+                                    $limit = $trendingPublications->count() ;
+                                    if($limit > 2)
+                                    $limit =2;
+                                    @endphp
+                                    @foreach ($trendingPublications as $publication)
                                     <li>
-                                        <a href="#" class="d-flex justify-content-between">
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" 
+                                            class="d-flex justify-content-between">
                                             <p>
                                                 <i class="fa fa-user"></i>
-                                                Komisaring
+                                                {{$publication->Submitter->name}}
                                             </p>
                                             <p>
                                                 <i class="fa fa-date"></i>
-                                                2019-01-15
+                                                {{$publication->updated_at}}
                                             </p>
+
                                         </a>
                                         <hr>
-                                        <a href="#" class=" justify-content-between">
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" >
+                                            <strong>{{substr($publication->submission_title,0,45)}}</strong>
+                                        </a>
+
+                                        <hr>
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" class=" justify-content-between">
                                             <div>
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending...
+                                                {{substr($publication->submission_abstract,0,150)}}...
 
                                             </div>
                                             <div class="mt-3">
-                                                <button class="mr_btn_solid mt-3"><i class="fa fa-home" ></i> View</button>
+                                                <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}"
+                                                 class="mr_btn_solid mt-3 text-white"><i class="fa fa-home"></i>
+                                                    View</a>
                                             </div>
-                                                
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex justify-content-between">
-                                            <p>
-                                                <i class="fa fa-user"></i>
-                                                Komisaring
-                                            </p>
-                                            <p>
-                                                <i class="fa fa-date"></i>
-                                                2019-01-15
-                                            </p>
-                                        </a>
-                                        <hr>
-                                        <a href="#" class=" justify-content-between">
-                                            <div>
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending...
 
-                                            </div>
-                                            <div class="mt-3">
-                                                <button class="mr_btn_solid mt-3"><i class="fa fa-eye" ></i> View</button>
-                                            </div>
-                                                
                                         </a>
                                     </li>
+                                    @endforeach
+
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="box">
+                        <div class="box social_area">
                             <div class="header d-flex justify-content-between" style="background-color:#47b502">
                                 <p>
                                     <i class="fas fa-star"></i>
@@ -126,56 +116,40 @@
                             </div>
                             <div class="list">
                                 <ul>
+                                    @foreach ($trendingPublications as $publication)
                                     <li>
-                                        <a href="#" class="d-flex justify-content-between">
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" 
+                                            class="d-flex justify-content-between">
                                             <p>
                                                 <i class="fa fa-user"></i>
-                                                Komisaring
+                                                {{$publication->Submitter->name}}
                                             </p>
                                             <p>
                                                 <i class="fa fa-date"></i>
-                                                2019-01-15
+                                                {{$publication->updated_at}}
                                             </p>
+
                                         </a>
                                         <hr>
-                                        <a href="#" class=" justify-content-between">
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" >
+                                            <strong>{{substr($publication->submission_title,0,45)}}</strong>
+                                        </a>
+
+                                        <hr>
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" class=" justify-content-between">
                                             <div>
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending...
+                                                {{substr($publication->submission_abstract,0,150)}}...
 
                                             </div>
                                             <div class="mt-3">
-                                                <button class="mr_btn_solid mt-3"><i class="fa fa-eye" ></i> View</button>
+                                                <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}"
+                                                 class="mr_btn_solid mt-3 text-white"><i class="fa fa-home"></i>
+                                                    View</a>
                                             </div>
-                                                
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex justify-content-between">
-                                            <p>
-                                                <i class="fa fa-user"></i>
-                                                Komisaring
-                                            </p>
-                                            <p>
-                                                <i class="fa fa-date"></i>
-                                                2019-01-15
-                                            </p>
-                                        </a>
-                                        <hr>
-                                        <a href="#" class=" justify-content-between">
-                                            <div>
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending...
 
-                                            </div>
-                                            <div class="mt-3">
-                                                <button class="mr_btn_solid mt-3"><i class="fa fa-eye" ></i> View</button>
-                                            </div>
-                                                
                                         </a>
                                     </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -184,62 +158,46 @@
                         <div class="box scam_area">
                             <div class="header d-flex justify-content-between bg2">
                                 <p>
-                                    <i class="fas fa-angry"></i>
+                                    <i class="fas fa-eye"></i>
                                     Most viewed
                                 </p>
                             </div>
                             <div class="list">
                                 <ul>
+                                    @foreach ($trendingPublications as $publication)
                                     <li>
-                                        <a href="#" class="d-flex justify-content-between">
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" 
+                                            class="d-flex justify-content-between">
                                             <p>
                                                 <i class="fa fa-user"></i>
-                                                Komisaring
-                                            </p>
-                                            <p>
-                                                <i class="fa fa-calender"></i>
-                                                2019-01-15
-                                            </p>
-                                        </a>
-                                        <hr>
-                                        <a href="#" class=" justify-content-between">
-                                            <div>
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending...
-
-                                            </div>
-                                            <div class="mt-3">
-                                                <button class="mr_btn_solid mt-3"><i class="fa fa-eye" ></i> View</button>
-                                            </div>
-                                                
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="d-flex justify-content-between">
-                                            <p>
-                                                <i class="fa fa-user"></i>
-                                                Komisaring
+                                                {{$publication->Submitter->name}}
                                             </p>
                                             <p>
                                                 <i class="fa fa-date"></i>
-                                                2019-01-15
+                                                {{$publication->updated_at}}
                                             </p>
+
                                         </a>
                                         <hr>
-                                        <a href="#" class=" justify-content-between">
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" >
+                                            <strong>{{substr($publication->submission_title,0,45)}}</strong>
+                                        </a>
+
+                                        <hr>
+                                        <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}" class=" justify-content-between">
                                             <div>
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending
-                                                What is happenining is that this paper is trending...
+                                                {{substr($publication->submission_abstract,0,150)}}...
 
                                             </div>
                                             <div class="mt-3">
-                                                <button class="mr_btn_solid mt-3"><i class="fa fa-eye" ></i> View</button>
+                                                <a href="/submission/{{$publication->id}}/{{$publication->submssion_token}}"
+                                                 class="mr_btn_solid mt-3 text-white"><i class="fa fa-home"></i>
+                                                    View</a>
                                             </div>
-                                                
+
                                         </a>
                                     </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -279,7 +237,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row rating_overview">
             <div class="col-lg-6">
                 <div class="box">
@@ -397,15 +355,15 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                    <div class="box">
-                            <div class="header">
-                                <i class="fas fa-star"></i>
-                                Publications
-                            </div>
-                            <div class="graph">
-                                <img class="img-fluid" src="/assets/img/graph.png" alt="">
-                            </div>
+                <div class="box">
+                    <div class="header">
+                        <i class="fas fa-star"></i>
+                        Publications
                     </div>
+                    <div class="graph">
+                        <img class="img-fluid" src="/assets/img/graph.png" alt="">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

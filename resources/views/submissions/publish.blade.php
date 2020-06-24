@@ -9,43 +9,21 @@
 <div class="row text-dark">
     <div class="col-md-1 col-lg-1"></div>
     <div class="col-md-10 col-lg-10">
-        @if (!$has_profile)
-        <div class="card">
-            <div class="card-header alert alert-danger">
 
-                Incomplete profile
+        @if (Session::has('success'))
+        
+        <div class="alert alert-success">
 
-            </div>
-            <div class="card-body">
-                Please complete your profile first, before submitting a new paper
-            </div>
-            <div class="card-footer">
-                <a href="/profile/details" class="btn btn-primary">Complete profile</a>
-            </div>
+            {{Session::get('success')}}
         </div>
-        @else
-
-        @if (isset($successmessage))
-        @foreach ($successmessage as $success)
-        <div class="row">
-            <div class="alert alert-success">
-
-                {{$success}}
-            </div>
-        </div>
-        @endforeach
+       
 
         @endif
         @if ($errors->any())
-        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger">
 
-        <div class="row">
-            <div class="alert alert-danger">
-
-                {{$error}}
-            </div>
+            {{$errors->first()}}
         </div>
-        @endforeach
         @endif
         <div class="card">
             @php
@@ -67,7 +45,9 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <form action="" method="post" class=" col-md-10 col-lg-10">
+                    <form action="/admin/submission/status/update/{{$submission->id}}/4"
+                        enctype="multipart/form-data" method="post" class=" col-md-10 col-lg-10">
+                        @csrf
                         <div class="form-group">
                             <label for="comment">Comment*</label>
                             <textarea name="comment" style="resize: none"
@@ -75,8 +55,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="resendFile">Resend Reason file *</label>
-                            <input type="file" class="form-control" name="resendFile">
+                            <label for="updateFile">Resend Reason file *</label>
+                            <input type="file" class="form-control" name="updateFile">
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Resend submission" class="btn btn-primary">
@@ -86,7 +66,6 @@
                 </div>
             </div>
         </div>
-        @endif
 
     </div>
 </div>

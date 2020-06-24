@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::prefix('/status')->group(function () {
                     Route::post('/review/{sub_id}', 'admin\AdminController@SetStatusReview');
                     Route::get('/resend/{sub_id}', 'admin\AdminController@ResendSubmissionPage');
-                    Route::post('/resend/{sub_id}', 'admin\AdminController@ResendSubmissionPaper');
+                    Route::post('/update/{sub_id}/{type}', 'admin\AdminController@UpdateSubmissionStatus');
                     Route::get('/reject/{sub_id}', 'admin\AdminController@RejectSubmissionPage');
                     Route::get('/publish/{sub_id}', 'admin\AdminController@PublishSubmissionPage');
                 });
@@ -60,5 +60,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', 'home\guestRequestController@getHomePage')->name('homePage');
+Route::get('/submission/{sub_id}/{sub_token}', 'home\guestRequestController@viewPublication');
 Route::get('/aboutus', 'home\guestRequestController@getAboutUsPage')->name('aboutUsPage');
 // Route::get('/home', 'HomeController@index')->name('home');

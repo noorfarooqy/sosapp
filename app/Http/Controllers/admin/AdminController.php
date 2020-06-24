@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\models\submissions\SubmissionChangesTrackerModel;
 use App\models\submissions\submissionsModel;
+use App\Notifications\PublishSubmissionNotification;
+use App\Notifications\RejectSubmissionNotification;
 use App\Notifications\submission\SubmissionUnderReviewNotification;
 use App\Notifications\submission\ResendSubmissionNotification;
 use App\User;
@@ -157,17 +159,18 @@ class AdminController extends Controller
 
     public function PublishSubmissionPage(Request $request, $sub_id)
     {
-        $user_profile = $this->CheckSubmissionAndAdmin($request, $sub_id);
-
-        abort_if($user_profile == null, 404);
-        if ($user_profile == false)
+        $profile = $this->CheckSubmissionAndAdmin($request, $sub_id);
+        abort_if($profile == null, 404);
+        if ($profile == false)
             return Redirect::back()->withErrors(['submission' => $this->error_message]);
         else {
-            $user_profile = $user_profile[0];
-            $submission = $user_profile[1][0];
+            $user_profile = $profile[0];
+            $submission = $profile[1][0];
+            $submitter = $profile[2][0];
         }
+        // $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
-        return view('submissions.publish', compact('submission', 'has_profile'));
+        return view('submissions.publish', compact('submission'));
     }
 
     public function CheckSubmissionAndAdmin($request, $sub_id)
@@ -193,7 +196,7 @@ class AdminController extends Controller
         return [$user_profile, $view_sub, $submitter];
     }
 
-    public function ResendSubmissionPaper(Request $request, $sub_id)
+    public function UpdateSubmissionStatus(Request $request, $sub_id, $type)
     {
         $profile = $this->CheckSubmissionAndAdmin($request, $sub_id);
         abort_if($profile == null, 404);
@@ -205,39 +208,69 @@ class AdminController extends Controller
             $submitter = $profile[2][0];
         }
         $status = $submission->submission_status;
-        if ($status != $submission->status_pending && $status != $submission->status_under_review) {
-            return Redirect::back()->withErrors(['submission' => 'The submission status cannot be resent']);
-        }
-
+        $target_status = null;
         $rules = [
             "comment" => "required|string|max:1200|min:3",
-            "resendFile" => "required|file|mimes:doc,docx"
+            "updateFile" => "required|file|mimes:doc,docx"
         ];
+        switch ($type) {
+            case 2:
+                if ($status == $submission->status_pendin || $status == $submission->status_under_review) {
+                    // 
+                    $target_status = $type; //resend
+                    $Notifier = new ResendSubmissionNotification($submitter, $submission);
+                } else
+                    return Redirect::back()->withErrors(['submission' => 'The submission status cannot be resent']);
+                break;
+            case 3:
+                if ($status == $submission->status_under_review || $status == $submission->status_pending) {
+                    $target_status = $type; //reject
+
+                    $Notifier = new RejectSubmissionNotification($submitter, $submission);
+                } else
+                    return Redirect::back()->withErrors(['submission' => 'The submission status cannot be rejected']);
+                break;
+            case 4:
+                if ($status == $submission->status_under_review) {
+                    $target_status = $type; //publish 
+                    $Notifier = null;
+                    $rules["updateFile"] = "required|file|mimes:pdf";
+                } else
+                    return Redirect::back()->withErrors(['submission' => 'The submission status cannot be published before reviewing']);
+                break;
+            default:
+                return Redirect::back()->withErrors(['submission' => 'Unknown submission update status']);
+        }
+
+
+
 
         $data = $request->validate($rules);
         $path = "uploads/submission/" . $submission->submission_token . '/files/';
         try {
-            $upload_url = $request->file('resendFile')->store($path, 'public');
+            $upload_url = $request->file('updateFile')->store($path, 'public');
         } catch (Exception $th) {
-            return Redirect::back()->withErrors(['resendFile', $th->getMessage()]);
+            return Redirect::back()->withErrors(['updateFile', $th->getMessage()]);
         }
 
-        $data["resendFile"] = "/storage/$upload_url";
+        $data["updateFile"] = "/storage/$upload_url";
+        if ($type == 4)
+            $Notifier = new PublishSubmissionNotification($submitter, $submission, $data["updateFile"]);
 
         $SubmissionTracker = new SubmissionChangesTrackerModel();
         $new_status = $SubmissionTracker->UpdateStatus(
             $status,
-            $submission->status_resent,
+            $target_status,
             $submission->id,
             $request->comment,
-            $data["resendFile"]
+            $data["updateFile"]
         );
 
         if (!$new_status)
             return Redirect::back()->withErrors(['submission' => $SubmissionTracker->getError()]);
-        $submission->update(['submission_status' => $submission->status_resent]);
+        $submission->update(['submission_status' => $target_status]);
         try {
-            $submitter->notify(new ResendSubmissionNotification($submitter, $submission));
+            $submitter->notify($Notifier);
         } catch (Exception $th) {
             $new_status->delete();
             $submission->update(['submission_status' => $status]);
