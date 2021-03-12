@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
+use App\models\VolumesModel;
+use App\models\submissions\SubmissionChangesTrackerModel;
 use App\models\submissions\submissionsModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -41,5 +43,50 @@ class guestRequestController extends Controller
             $query->where('target_status', '=', 4);
         })->where('submission_status', 4)->get();
         return $publishedSubmissions;
+    }
+
+    public function OpenArchivePage()
+    {
+        $publication = submissionsModel::get();
+
+        $publishedSubmissions = SubmissionChangesTrackerModel::where('target_status', 4)->get();
+        // $publications = $this->GetTrendingPapers();
+        $all_volumes = VolumesModel::latest()->get();
+        $volumes = [];
+        foreach ($all_volumes as $key => $volume) {
+            if(in_array($volume->year, $volumes)){
+                if(in_array($volume->month, $volume[$volume->volume_year]["issues"])){
+                    array_push( $volumes[$$volume->volume_year]["issues"], [
+                        ["title" => $volume->Submissions->submission_title,
+                        "id" => $volume->volume_submission_id,
+                        "token" =>$volume->volume_submission_token]
+                    ]);
+                }
+                else{
+                    $issue = [
+                        "issue_name" => $volume->volume_month,
+                        "articles" => [
+                            ["title" => $volume->Submissions->submission_title,
+                            "id" => $volume->volume_submission_id,
+                            "token" =>$volume->volume_submission_token]
+                        ] 
+                    ];
+                    $volumes[$volume->volume_year]["issues"] = [$issue];
+                }
+            }
+            else{
+                $volumes[$volume->volume_year]["volume_name"] = $volume->volume_year;
+                $issue = [
+                    "issue_name" => $volume->volume_month,
+                    "articles" => [
+                        ["title" => $volume->Submissions->submission_title,
+                        "id" => $volume->volume_submission_id,
+                        "token" =>$volume->volume_submission_token]
+                        ] 
+                ];
+                $volumes[$volume->volume_year]["issues"] =  [$issue];
+            }
+        }
+        return view('homepage.archive', compact('publishedSubmissions', 'volumes'));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\models\VolumesModel;
 use App\models\submissions\SubmissionChangesTrackerModel;
 use App\models\submissions\submissionsModel;
 use App\Notifications\PublishSubmissionNotification;
@@ -254,8 +255,22 @@ class AdminController extends Controller
         }
 
         $data["updateFile"] = "/storage/$upload_url";
-        if ($type == 4)
+        if ($type == 4){
             $Notifier = new PublishSubmissionNotification($submitter, $submission, $data["updateFile"]);
+            $VolumeModel = new VolumesModel();
+            $volume_data = [
+                "volume_submission_id" => $submission->id,
+                "volume_submission_token" => $submission->submssion_token,
+                "volume_year" => gmdate('Y', time()),
+                "volume_month" => gmdate('m', time()),
+                "volume_id" => -1
+            ];
+
+            $volume = $VolumeModel->updateOrCreateVolume($volume_data);
+            if(!$volume)
+                return Redirect::back()->withErrors(['submission', $VolumeModel->error_message]);
+        }
+            
 
         $SubmissionTracker = new SubmissionChangesTrackerModel();
         $new_status = $SubmissionTracker->UpdateStatus(

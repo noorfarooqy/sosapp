@@ -44,7 +44,8 @@ class FileManager
         $path = $this->upload_path ;
         $is_uploaded = Storage::disk('public')->putFileAs($path, $file, $this->filename);
         if ($is_uploaded) {
-            return Storage::disk('public')->url($path.$this->filename);
+            // return Storage::disk('public')->url($path.$this->filename);
+            return "/storage/".$path.$this->filename;
         }
 
         $this->Status->setError(["Failed to upload file", $path]);

@@ -62,4 +62,5 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/', 'home\guestRequestController@getHomePage')->name('homePage');
 Route::get('/submission/{sub_id}/{sub_token}', 'home\guestRequestController@viewPublication');
 Route::get('/aboutus', 'home\guestRequestController@getAboutUsPage')->name('aboutUsPage');
+Route::get('/archive', 'home\guestRequestController@OpenArchivePage')->name('archivePage');
 // Route::get('/home', 'HomeController@index')->name('home');
