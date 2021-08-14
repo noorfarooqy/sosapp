@@ -1,10 +1,10 @@
-@extends('layout.base_template')
+@extends('layouts.base_template')
 
-@section('pageTitle')
+@section('title')
 
 @endsection
 
-@section('page-content')
+@section('content')
 
 <!-- Home Page Banner Area Start -->
 <section class="home_main_content" style="padding-bottom: 0;">

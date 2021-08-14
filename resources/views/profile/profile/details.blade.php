@@ -2,7 +2,7 @@
 @section('custom-links')
 <link href="/css/custom/select2.min.css" rel="stylesheet" />
 @endsection
-@section('page-content')
+@section('content')
     
 
       <div class="row">

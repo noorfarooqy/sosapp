@@ -1,10 +1,10 @@
-@extends('layout.base_template')
+@extends('layouts.base_template')
 
-@section('pageTitle')
-
+@section('title')
+Archive
 @endsection
 
-@section('page-content')
+@section('content')
 
 <div class="container">
     <div class="row m-3">

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\models\admin\AdminsModel;
+use App\Models\admin\AdminsModel;
 use App\models\submissions\submissionsModel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +42,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function profileData()
     {
-        return $this->hasOne('App\models\profile\userProfileModel', 'user_id', 'id');
+        return $this->hasOne('App\Models\Profile\UserProfileModel', 'user_id', 'id');
     }
     public function allSubmissions()
     {

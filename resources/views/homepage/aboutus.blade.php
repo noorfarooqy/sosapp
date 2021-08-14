@@ -1,6 +1,6 @@
-@extends('layout.base_template')
+@extends('layouts.base_template')
 
-@section('page-content')
+@section('content')
     
 <section class="businessDeal">
     <div class="container">

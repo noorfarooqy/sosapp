@@ -10,6 +10,7 @@ use App\Notifications\PublishSubmissionNotification;
 use App\Notifications\RejectSubmissionNotification;
 use App\Notifications\submission\SubmissionUnderReviewNotification;
 use App\Notifications\submission\ResendSubmissionNotification;
+use App\Services\ContactUsServices;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -294,5 +295,14 @@ class AdminController extends Controller
             ]);
         }
         return redirect()->route('view_paper_submission', ['id' => $sub_id])->with('success', 'Successfully resent submission');
+    }
+
+    //views
+    public function ViewFeedback(Request $request)
+    {
+        $ContactUserServices = new ContactUsServices();
+        $feedbacks = $ContactUserServices->getAllFeedbacks($request);
+        
+        return view('feedback.list_feeds', compact('feedbacks'));
     }
 }

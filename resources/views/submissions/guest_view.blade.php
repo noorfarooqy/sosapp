@@ -1,10 +1,10 @@
-@extends('layout.base_template')
+@extends('layouts.base_template')
 @section('custom-links')
 
 
 @endsection
 
-@section('page-content')
+@section('content')
 
 <errormodal v-on:dis-miss-error-modal="Error.resetErrorModal()" v-if="Error.visible" v-bind="Error"></errormodal>
 <subsuccess v-if="Success.visible" v-bind="Success" v-on:dis-miss-subsuccess-modal="Success.resetSuccessModal()">

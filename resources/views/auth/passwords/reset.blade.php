@@ -1,6 +1,6 @@
-@extends('layout.base_template')
+@extends('layouts.base_template')
 
-@section('page-content')
+@section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">

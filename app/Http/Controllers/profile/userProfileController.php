@@ -6,7 +6,7 @@ use App\CustomClass\CustomValidator;
 use App\CustomClass\FileManager;
 use App\CustomClass\Status;
 use App\Http\Controllers\Controller;
-use App\models\profile\userProfileModel;
+use App\Models\Profile\UserProfileModel;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

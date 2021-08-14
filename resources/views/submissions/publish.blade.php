@@ -4,7 +4,7 @@
 
 @endsection
 
-@section('page-content')
+@section('content')
 
 <div class="row text-dark">
     <div class="col-md-1 col-lg-1"></div>

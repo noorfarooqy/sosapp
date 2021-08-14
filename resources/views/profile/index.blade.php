@@ -4,7 +4,7 @@
 
 @endsection
 
-@section('page-content')
+@section('content')
 <div class="container-fluid">
 
     <!-- Page Heading -->

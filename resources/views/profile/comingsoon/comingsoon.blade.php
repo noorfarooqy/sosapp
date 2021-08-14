@@ -1,6 +1,6 @@
 @extends('admin.layout.main')
 
-@section('page-content')
+@section('content')
     <div class="row">
         <div class="col-md-1 col-lg-1"></div>
         <div class="col-md-10 col-lg-10">

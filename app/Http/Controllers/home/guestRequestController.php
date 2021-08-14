@@ -17,6 +17,10 @@ class guestRequestController extends Controller
     {
         return view('homepage.aboutus');
     }
+    public function ViewContactUsPage()
+    {
+        return view('homepage.contactus');
+    }
 
     public function getHomePage()
     {
