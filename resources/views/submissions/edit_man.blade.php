@@ -1,7 +1,6 @@
-@extends('profile.layout.main')
-@section('custom-links')
-
-
+@extends('layouts.admin_layout')
+@section('title')
+Edit manuscript
 @endsection
 
 @section('content')
@@ -32,10 +31,10 @@
             $authors = $submission->subAuthors;
             $files = $submission->subFiles;
             if($submission->submission_status == 0 ) {$bg = "bg-info text-white"; $btn="btn-info";}
-            else if($submission->submission_status == 1){ $bg = "bg-info text-white"; $btn="btn-info";}
-            else if($submission->submission_status == 2 ) {$bg ="bg-warning text-dark"; $btn="btn-warning"; }
-            else if($submission->submission_status == 3) {$bg = "bg-danger text-white"; $btn="btn-danger";}
-            else if($submission->submission_status == 4) {$bg = "bg-primary text-white"; $btn="btn-primary";}
+            else if($submission->submission_status == 1){ $bg = "bg-info"; $btn="btn-info";}
+            else if($submission->submission_status == 2 ) {$bg ="bg-warning "; $btn="btn-warning"; }
+            else if($submission->submission_status == 3) {$bg = "bg-danger"; $btn="btn-danger";}
+            else if($submission->submission_status == 4) {$bg = "bg-primary"; $btn="btn-primary";}
             else $bg = 'bg-none';
             @endphp
             <div class="card-header {{$bg}}">
@@ -107,12 +106,12 @@
 
                         <div class="row ml-1"><strong>Edit manuscript / cover</strong></div>
                         <div class="row" >
-                                <table class="table text-dark">
+                                <table class="table text-white">
                                     <thead class="thead {{$bg}}">
-                                        <tr>
-                                            <th>File</th>
-                                            <th>View</th>
-                                            <th>Change</th>
+                                        <tr class="">
+                                            <th class="text-white">File</th>
+                                            <th class="text-white">View</th>
+                                            <th class="text-white">Change</th>
                                         </tr>
 
                                     </thead>
@@ -167,7 +166,7 @@
 @endsection
 
 
-@section('custom_scripts')
+@section('scripts')
 
 <script>
     window.api_token = "{{Auth::user()->api_token}}"

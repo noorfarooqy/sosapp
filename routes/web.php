@@ -11,7 +11,8 @@
 |
  */
 
-use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\home\guestRequestController;
 use App\Http\Controllers\profile\userProfileController;
 use App\Http\Controllers\submission\submissionController;
@@ -28,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('submission')->group(function () {
             Route::middleware('verified')->group(function () {
                 Route::get('/new', [submissionController::class, 'newSubmissionPage'])->name('newSubmissionPage');
+                Route::get('/changes/{id}', [submissionController::class, 'viewUserSubmissionChanges'])->name('viewUserSubmission');
                 Route::get('/view/{id}', [submissionController::class, 'viewUserSubmission'])->name('viewUserSubmission');
                 Route::post('/resubmit/{id}', [submissionController::class, 'ResubmitUserSubmission'])->name('viewUserSubmission');
                 Route::get('/edit/manuscript/{id}', [submissionController::class, 'editManuscript'])->name('update_manuscript');
@@ -49,7 +51,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::prefix('admin')->group(function () {
             Route::prefix('submission')->group(function () {
-                Route::get('/view/{id}', [AdminController::class,' viewUserPaper'])->name('view_paper_submission');
+                Route::get('/changes/{id}', [submissionController::class, 'viewUserSubmissionChanges'])->name('viewUserSubmission');
+                Route::get('/view/{id}', [AdminController::class,'viewUserPaper'])->name('view_paper_submission');
                 Route::get('/accepted', [AdminController::class, 'OpenAcceptedPapers']);
                 Route::get('/rejected', [AdminController::class, 'openRejectedPapers']);
                 Route::get('/resent', [AdminController::class, 'openResentPapers']);
@@ -66,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [AdminController::class, 'ViewFeedback'])->name('feedback.all');
                 Route::get('/read',[AdminController::class, 'ViewReadStatusFeedback'])->name('feedback.status');
             });
+            Route::get('/settings', [AppSettingsController::class,'viewSettingsPage'])->name('settings.view');
         });
     });
 });

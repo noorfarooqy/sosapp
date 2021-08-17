@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Models\admin\AdminsModel;
-use App\models\submissions\submissionsModel;
+use App\Models\Admin\AdminsModel;
+use App\Models\Submissions\SubmissionsModel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function allSubmissions()
     {
-        return $this->hasMany(submissionsModel::class, 'user_id', 'id');
+        return $this->hasMany(SubmissionsModel::class, 'user_id', 'id');
     }
     public function getPendingSubmissions()
     {

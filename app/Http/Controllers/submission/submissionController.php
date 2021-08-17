@@ -6,14 +6,15 @@ use App\CustomClass\CustomValidator;
 use App\CustomClass\FileManager;
 use App\CustomClass\Status;
 use App\Http\Controllers\Controller;
-use App\models\submissions\submissionAuthorsModel;
-use App\models\submissions\submissionFilesModel;
-use App\models\submissions\submissionsModel;
+use App\Models\Submissions\SubmissionAuthorsModel;
+use App\Models\Submissions\SubmissionFilesModel;
+use App\Models\Submissions\SubmissionsModel;
+use App\Services\SubmissionsServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use \Auth;
 
 class submissionController extends Controller
 {
@@ -27,6 +28,12 @@ class submissionController extends Controller
         $this->FileMananger = new FileManager();
         $this->CustomValidator = new CustomValidator();
         $this->submision_folder = Str::random(15) . "_" . time();
+    }
+    public function viewUserSubmissionChanges(Request $request, $change_id)
+    {
+        $SubmissionServices = new SubmissionsServices();
+        $change = $SubmissionServices->getSubmissionChangeById($request, $change_id);
+        return view('submissions.change_view', compact('change'));
     }
     public function newSubmissionPage()
     {
@@ -77,7 +84,7 @@ class submissionController extends Controller
 
         $submission_token = Str::random(32) . time();
 
-        $submission = submissionsModel::create([
+        $submission = SubmissionsModel::create([
             "user_id" => $user->id,
             "user_token" => $user_profile->user_token,
             "submssion_token" => $submission_token,
@@ -91,7 +98,7 @@ class submissionController extends Controller
 
         foreach ($uploaded_figures as $key => $figure) {
             # code...
-            $sub_files = submissionFilesModel::create([
+            $sub_files = SubmissionFilesModel::create([
                 "submission_id" => $submission->id,
                 "submission_token" => $submission_token,
                 "submission_file" => $figure,
@@ -103,7 +110,7 @@ class submissionController extends Controller
         foreach ($authors as $key => $author) {
             # code...
             $author = json_decode($author, true);
-            $sub_authors = submissionAuthorsModel::create([
+            $sub_authors = SubmissionAuthorsModel::create([
                 "submission_id" => $submission->id,
                 "submission_token" => $submission_token,
                 "author_firstname" => $author['first_name'],
@@ -434,12 +441,12 @@ class submissionController extends Controller
             "author_sex" => "required|integer|in:0,1",
         ];
         $is_valid = $request->validate($rules);
-        $author_exists = submissionAuthorsModel::where("author_email", $request->author_email)->exists();
+        $author_exists = SubmissionAuthorsModel::where("author_email", $request->author_email)->exists();
         if ($author_exists) {
             return Redirect::back()->withErrors(["author_email" => "The author email exists."])->withInput($is_valid);
         }
 
-        $sub_authors = submissionAuthorsModel::create([
+        $sub_authors = SubmissionAuthorsModel::create([
             "submission_id" => $submission->id,
             "submission_token" => $submission->submssion_token,
             "author_firstname" => $request->author_firstname,
@@ -511,7 +518,7 @@ class submissionController extends Controller
         }
 
         $num_files = $submission->subFiles->count();
-        $added = submissionFilesModel::create([
+        $added = SubmissionFilesModel::create([
             "submission_id" => $submission->id,
             "submission_token" => $submission->submssion_token,
             "submission_file" => $is_uploaded,
@@ -540,7 +547,7 @@ class submissionController extends Controller
 
         $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
-        $author = submissionAuthorsModel::where([
+        $author = SubmissionAuthorsModel::where([
             ["submission_id", $sub_id],
             ["id", $author_id],
         ])->get();
@@ -573,13 +580,13 @@ class submissionController extends Controller
 
         $has_profile = $user_profile !== null && $user_profile->count() >= 1;
 
-        $figures = submissionFilesModel::where([
+        $figures = SubmissionFilesModel::where([
             ["submission_id", $sub_id],
         ])->get();
         if ($figures->count() <= 1) {
             return Redirect::back()->withErrors(['error' => 'Can not remove all figures, you must have at least one figure']);
         }
-        $figure = submissionFilesModel::where([
+        $figure = SubmissionFilesModel::where([
             ['id', $figure_id],
             ['submission_id', $sub_id],
         ])->get();

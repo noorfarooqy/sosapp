@@ -1,7 +1,8 @@
 <?php
 
-namespace App\models\submissions;
+namespace App\Models\Submissions;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,5 +31,13 @@ class SubmissionChangesTrackerModel extends Model
             "changed_by" => Auth::user()->id,
 
         ]);
+    }
+    public function Submission()
+    {
+        return $this->belongsTo(SubmissionsModel::class,'submission_id');
+    }
+    public function Moderator()
+    {
+        return $this->belongsTo(User::class,'changed_by');
     }
 }

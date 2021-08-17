@@ -1,7 +1,6 @@
-@extends('profile.layout.main')
-@section('custom-links')
-
-
+@extends('layouts.admin_layout')
+@section('title')
+{{$submission->submission_title}}
 @endsection
 
 @section('content')
@@ -222,7 +221,7 @@
                                     $changes = $submission->SubmissionChanges;
                                 @endphp
                                 @foreach ($changes as $change)
-                                <a class="dropdown-item d-flex align-items-center" href="#" style="white-space: unset">
+                                <a class="dropdown-item d-flex align-items-center" href="{{Auth::user()->IsAdmin() ? '/admin' : '/profile'}}/submission/changes/{{$change->id}}" style="white-space: unset">
                                     <div class="mr-3">
                                       <div class="icon-circle bg-primary">
                                         <i class="fas fa-file-alt text-white"></i>
@@ -296,7 +295,7 @@
 @endsection
 
 
-@section('custom_scripts')
+@section('scripts')
 
 <script>
     window.api_token = "{{Auth::user()->api_token}}"

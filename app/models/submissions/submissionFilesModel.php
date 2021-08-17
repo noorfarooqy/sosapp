@@ -1,10 +1,10 @@
 <?php
 
-namespace App\models\submissions;
-use App\models\submissions\submissionsModel;
+namespace App\Models\Submissions;
+use App\Models\Submissions\SubmissionsModel;
 use Illuminate\Database\Eloquent\Model;
 
-class submissionFilesModel extends Model
+class SubmissionFilesModel extends Model
 {
     //
     protected $table = "submission_files";
@@ -15,7 +15,7 @@ class submissionFilesModel extends Model
 
     public function submission()
     {
-        return $this->belongsTo(submissionsModel::class, 'id', 'submission_id');
+        return $this->belongsTo(SubmissionsModel::class, 'id', 'submission_id');
     }
 
     

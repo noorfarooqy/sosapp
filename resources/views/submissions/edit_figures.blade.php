@@ -1,7 +1,6 @@
-@extends('profile.layout.main')
-@section('custom-links')
-
-
+@extends('layouts.admin_layout')
+@section('title')
+Edit figures
 @endsection
 
 @section('content')
@@ -158,7 +157,7 @@
 @endsection
 
 
-@section('custom_scripts')
+@section('scripts')
 
 <script>
     window.api_token = "{{Auth::user()->api_token}}"

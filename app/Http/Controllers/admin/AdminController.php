@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\models\VolumesModel;
-use App\models\submissions\SubmissionChangesTrackerModel;
-use App\models\submissions\submissionsModel;
+use App\Models\VolumesModel;
+use App\Models\Submissions\SubmissionChangesTrackerModel;
+use App\Models\Submissions\SubmissionsModel;
 use App\Notifications\PublishSubmissionNotification;
 use App\Notifications\RejectSubmissionNotification;
 use App\Notifications\submission\SubmissionUnderReviewNotification;
@@ -29,7 +29,7 @@ class AdminController extends Controller
         $user = $request->user();
         $admin = $user->AdminInfo;
         abort_if(($admin->count() <= 0 || $admin->AdminRole == null || $admin->AdminRole->perm_submission < 10), 403);
-        $accepted_submissions = submissionsModel::where('submission_status', 4)->orderBy('updated_at', 'DESC')->paginate(10);
+        $accepted_submissions = SubmissionsModel::where('submission_status', 4)->orderBy('updated_at', 'DESC')->paginate(10);
         $user_profile = $user->profileData;
 
         $has_profile = $user_profile !== null && $user_profile->count() >= 1;
@@ -41,7 +41,7 @@ class AdminController extends Controller
         $user = $request->user();
         $admin = $user->AdminInfo;
         abort_if(($admin->count() <= 0 || $admin->AdminRole == null || $admin->AdminRole->perm_submission < 10), 403);
-        $rejected_submissions = submissionsModel::where('submission_status', 3)->orderBy('updated_at', 'DESC')->paginate(10);
+        $rejected_submissions = SubmissionsModel::where('submission_status', 3)->orderBy('updated_at', 'DESC')->paginate(10);
         $user_profile = $user->profileData;
 
         $has_profile = $user_profile !== null && $user_profile->count() >= 1;
@@ -53,7 +53,7 @@ class AdminController extends Controller
         $user = $request->user();
         $admin = $user->AdminInfo;
         abort_if(($admin->count() <= 0 || $admin->AdminRole == null || $admin->AdminRole->perm_submission < 10), 403);
-        $resent_submissions = submissionsModel::where('submission_status', 2)->orderBy('updated_at', 'DESC')->paginate(10);
+        $resent_submissions = SubmissionsModel::where('submission_status', 2)->orderBy('updated_at', 'DESC')->paginate(10);
         $user_profile = $user->profileData;
 
         $has_profile = $user_profile !== null && $user_profile->count() >= 1;
@@ -65,7 +65,7 @@ class AdminController extends Controller
         $user = $request->user();
         $admin = $user->AdminInfo;
         abort_if(($admin->count() <= 0 || $admin->AdminRole == null || $admin->AdminRole->perm_submission < 10), 403);
-        $pending_submission = submissionsModel::where('submission_status', 0)
+        $pending_submission = SubmissionsModel::where('submission_status', 0)
             ->orWhere('submission_status', 1)->orderBy('updated_at', 'DESC')->get();
         $user_profile = $user->profileData;
 
@@ -79,7 +79,7 @@ class AdminController extends Controller
         $user = $request->user();
         $admin = $user->AdminInfo;
         abort_if(($admin->count() <= 0 || $admin->AdminRole == null || $admin->AdminRole->perm_submission < 10), 403);
-        $view_sub = submissionsModel::where([
+        $view_sub = SubmissionsModel::where([
             ['id', $sub_id],
         ])->get();
         if ($view_sub->count() <= 0) {
@@ -107,7 +107,7 @@ class AdminController extends Controller
             return Redirect::back()->withErrors(['submission' => 'Sorry. The submission provided do not match with the submitted form']);
         }
 
-        $view_sub = submissionsModel::where([
+        $view_sub = SubmissionsModel::where([
             ['id', $sub_id],
         ])->get();
         abort_if($view_sub->count() <= 0, 404);
@@ -180,7 +180,7 @@ class AdminController extends Controller
         $user = $request->user();
         $admin = $user->AdminInfo;
         abort_if(($admin->count() <= 0 || $admin->AdminRole == null || $admin->AdminRole->perm_submission < 30), 403);
-        $view_sub = submissionsModel::where([
+        $view_sub = SubmissionsModel::where([
             ['id', $sub_id],
         ])->get();
         if ($view_sub->count() <= 0) {

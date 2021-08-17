@@ -34,6 +34,7 @@
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Settings</h6>
+            <a class="collapse-item" href="/admin/settings">App settings</a>
             <a class="collapse-item" href="/admin/services/new">Email notifications</a>
         </div>
     </div>

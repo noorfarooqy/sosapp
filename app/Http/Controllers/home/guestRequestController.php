@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
-use App\models\VolumesModel;
-use App\models\submissions\SubmissionChangesTrackerModel;
-use App\models\submissions\submissionsModel;
+use App\Models\VolumesModel;
+use App\Models\Submissions\SubmissionChangesTrackerModel;
+use App\Models\Submissions\SubmissionsModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -31,7 +31,7 @@ class guestRequestController extends Controller
 
     public function viewPublication(Request $request, $sub_id, $sub_token)
     {
-        $publication = submissionsModel::where([
+        $publication = SubmissionsModel::where([
             ['id', $sub_id],
             ['submssion_token', $sub_token]
         ])->get();
@@ -43,7 +43,7 @@ class guestRequestController extends Controller
 
     public function GetTrendingPapers()
     {
-        $publishedSubmissions = submissionsModel::wherehas('SubmissionChanges', function (Builder $query) {
+        $publishedSubmissions = SubmissionsModel::wherehas('SubmissionChanges', function (Builder $query) {
             $query->where('target_status', '=', 4);
         })->where('submission_status', 4)->get();
         return $publishedSubmissions;
@@ -51,7 +51,7 @@ class guestRequestController extends Controller
 
     public function OpenArchivePage()
     {
-        $publication = submissionsModel::get();
+        $publication = SubmissionsModel::get();
 
         $publishedSubmissions = SubmissionChangesTrackerModel::where('target_status', 4)->get();
         // $publications = $this->GetTrendingPapers();

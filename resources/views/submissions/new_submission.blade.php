@@ -1,5 +1,8 @@
-@extends('profile.layout.main')
-@section('custom-links')
+@extends('layouts.admin_layout')
+@section('title')
+New submission
+@endsection
+@section('styles')
 
 
 <style>
@@ -55,64 +58,64 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4 col-lg-4">
-                        <ul class="navbar-nav bg-gradient-secondary sidebar-dark script_tabs" id="accordionSidebar">
+                        <ul class="navbar-nav bg-secondary sidebar-dark script_tabs" id="accordionSidebar">
 
 
 
                             <!-- Nav Item - Dashboard -->
-                            <li class="nav-item border-bottom-primary "
-                            :class="{'bg-gradient-primary': submission_tabs.active_tab ===0 }">
+                            <li class="nav-item border-bottom-primary p-2"
+                            :class="{'bg-success': submission_tabs.active_tab ===0 }">
                                 <a class="nav-link" href="/" @click.prevent="setActiveSubmissionTab(0)">
-                                    <i class="fas fa-fw fa-info"></i>
+                                    <i class="bx bx-info-circle mr-1"></i>
                                     <span>Manuscript information</span>
                                     <span class="badge badge-success float-right mr-2" v-if="Manuscript_data.hasManInfo()">
-                                        <i class="fas fa-fw fa-check" style="color:white"></i>
+                                        <i class="bx bx-check" style="color:white"></i>
                                     </span>
                                     <span class="badge badge-danger float-right mr-2" v-else>
-                                        <i class="fas fa-fw fa-times" style="color:white"></i>
+                                        <i class="bx bx-x" style="color:white"></i>
                                     </span>
                                 </a>
                             </li>
-                            <li class="nav-item border-bottom-primary"
-                            :class="{'bg-gradient-primary': submission_tabs.active_tab ===1 }">
+                            <li class="nav-item border-bottom-primary p-2"
+                            :class="{'bg-success': submission_tabs.active_tab ===1 }">
                                 <a class="nav-link" href="/" @click.prevent="setActiveSubmissionTab(1)">
-                                    <i class="fas fa-fw fa-user"></i>
+                                    <i class="bx bx-user mr-1"></i>
                                     <span>Author information</span>
 
                                     <span class="badge badge-success float-right mr-2" v-if="Manuscript_data.hasAuthor()">
-                                        <i class="fas fa-fw fa-check" style="color:white"></i>
+                                        <i class="bx bx-check" style="color:white"></i>
                                     </span>
                                     <span class="badge badge-danger float-right mr-2" v-else>
-                                        <i class="fas fa-fw fa-times" style="color:white"></i>
+                                        <i class="bx bx-x" style="color:white"></i>
                                     </span>
                                 </a>
                                     
                             </li>
-                            <li class="nav-item border-bottom-primary"
-                            :class="{'bg-gradient-primary': submission_tabs.active_tab ===2 }">
+                            <li class="nav-item border-bottom-primary p-2"
+                            :class="{'bg-success': submission_tabs.active_tab ===2 }">
                                 <a class="nav-link" href="/" @click.prevent="setActiveSubmissionTab(2)">
-                                    <i class="fas fa-fw fa-file"></i>
+                                    <i class="bx bx-upload mr-1"></i>
                                     <span>Uplaod files</span>
 
                                     <span class="badge badge-success float-right mr-2" v-if="Manuscript_data.hasManuscriptFiles()">
-                                        <i class="fas fa-fw fa-check" style="color:white"></i>
+                                        <i class="bx bx-check" style="color:white"></i>
                                     </span>
                                     <span class="badge badge-danger float-right mr-2" v-else>
-                                        <i class="fas fa-fw fa-times" style="color:white"></i>
+                                        <i class="bx bx-x" style="color:white"></i>
                                     </span>
                                 </a>
                             </li>
-                            <li class="nav-item border-bottom-primary"
-                            :class="{'bg-gradient-primary': submission_tabs.active_tab ===3 }">
+                            <li class="nav-item border-bottom-primary p-2"
+                            :class="{'bg-success': submission_tabs.active_tab ===3 }">
                                 <a class="nav-link" href="/" @click.prevent="setActiveSubmissionTab(3)">
-                                    <i class="fas fa-fw fa-save"></i>
+                                    <i class="bx bx-save"></i>
                                     <span>Review and submit</span>
 
                                     <span class="badge badge-success float-right mr-2" v-if="Manuscript_data.hasFilledAll()">
-                                        <i class="fas fa-fw fa-check" style="color:white"></i>
+                                        <i class="bx bx-check" style="color:white"></i>
                                     </span>
                                     <span class="badge badge-danger float-right mr-2" v-else>
-                                        <i class="fas fa-fw fa-times" style="color:white"></i>
+                                        <i class="bx bx-x" style="color:white"></i>
                                     </span>
                                 </a>
                             </li>
@@ -142,7 +145,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="card manuscript_information"  v-if="submission_tabs.active_tab === 0">
-                                    <div class="card-header bg-gradient-primary" style="color:white">
+                                    <div class="card-header bg-primary" style="color:white">
                                         <i class="fas fa-fw fa-info"></i> Manuscript information
                                     </div>
                                     <div class="card-body">
@@ -184,7 +187,7 @@
 
 
                                 <div class="card author_information" v-if="submission_tabs.active_tab === 1">
-                                    <div class="card-header bg-gradient-primary" style="color:white">
+                                    <div class="card-header bg-primary" style="color:white">
                                         <i class="fas fa-fw fa-info"></i> Author information
                                         <button type="submit" class="btn float-right"
                                             :class="getAuthorClass()" @click.prevent="toggleAuthorForm()">
@@ -295,7 +298,7 @@
                                 </div>
 
                                 <div class="card author_information" v-if="submission_tabs.active_tab === 2">
-                                    <div class="card-header bg-gradient-primary" style="color:white">
+                                    <div class="card-header bg-primary" style="color:white">
                                         <i class="fas fa-fw fa-info"></i> Upload files
                                         
                                     </div>
@@ -414,7 +417,7 @@
                                 </div>
 
                                 <div class="card author_information" v-if="submission_tabs.active_tab === 3">
-                                    <div class="card-header bg-gradient-primary" style="color:white">
+                                    <div class="card-header bg-primary" style="color:white">
                                         <i class="fas fa-fw fa-info"></i> Review and submit
                                         
                                     </div>
@@ -545,7 +548,7 @@
 @endsection
 
 
-@section('custom_scripts')
+@section('scripts')
 
 <script>
     window.api_token = "{{Auth::user()->api_token}}"

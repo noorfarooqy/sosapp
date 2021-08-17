@@ -1,13 +1,12 @@
 <?php
 
-namespace App\models\submissions;
+namespace App\Models\Submissions;
 
-use App\models\submissions\submissionFilesModel;
+use App\Models\Submissions\SubmissionFilesModel;
 use App\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class submissionsModel extends Model
+class SubmissionsModel extends Model
 {
     //
     protected $table = "submissions";
@@ -18,11 +17,11 @@ class submissionsModel extends Model
 
     public function subFiles()
     {
-        return $this->hasMany(submissionFilesModel::class, 'submission_id', 'id');
+        return $this->hasMany(SubmissionFilesModel::class, 'submission_id', 'id');
     }
     public function subAuthors()
     {
-        return $this->hasMany(submissionAuthorsModel::class, 'submission_id', 'id');
+        return $this->hasMany(SubmissionAuthorsModel::class, 'submission_id', 'id');
     }
     public function Submitter()
     {

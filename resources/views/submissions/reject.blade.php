@@ -1,7 +1,6 @@
-@extends('profile.layout.main')
-@section('custom-links')
-
-
+@extends('layouts.admin_layout')
+@section('title')
+Rejected
 @endsection
 
 @section('content')

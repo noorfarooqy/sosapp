@@ -1,10 +1,10 @@
 <?php
 
-namespace App\models\submissions;
+namespace App\Models\Submissions;
 
 use Illuminate\Database\Eloquent\Model;
 
-class submissionAuthorsModel extends Model
+class SubmissionAuthorsModel extends Model
 {
     //
     protected $table = "submission_authors";

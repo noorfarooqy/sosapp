@@ -7,6 +7,7 @@ use App\CustomClass\FileManager;
 use App\CustomClass\Status;
 use App\Http\Controllers\Controller;
 use App\Models\Profile\UserProfileModel;
+use App\Services\CacheServices;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -26,6 +27,7 @@ class userProfileController extends Controller
     }
     public function getProfileIndexPage()
     {
+        // return CacheServices::getAppSettings(true);
         return view('profile.index');
     }
     public function getProfileDetailsPage(Request $request)
@@ -64,7 +66,7 @@ class userProfileController extends Controller
         $profile_data = $profile->profileData;
         if ($profile_data === null || $profile_data->count() <= 0) {
             $token = hash('sha256', time() . Str::random(80));
-            userProfileModel::create([
+            UserProfileModel::create([
                 "user_id" => $profile->id,
                 "user_token" => $token,
                 "user_title" => $request->user_title,

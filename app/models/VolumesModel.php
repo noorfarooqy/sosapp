@@ -1,8 +1,8 @@
 <?php
 
-namespace App\models;
+namespace App\Models;
 
-use App\models\submissions\submissionsModel;
+use App\Models\Submissions\SubmissionsModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,7 +30,7 @@ class VolumesModel extends Model
         }
     }
     public function Submissions(){
-        return $this->belongsTo(submissionsModel::class, 'volume_submission_id');
+        return $this->belongsTo(SubmissionsModel::class, 'volume_submission_id');
     }
 
 }
