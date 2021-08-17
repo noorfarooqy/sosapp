@@ -1,4 +1,4 @@
-@extends('profile.layout.main')
+@extends('layouts.admin_layout')
 
 @section('title')
     Settings
