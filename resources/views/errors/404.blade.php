@@ -16,7 +16,7 @@
                     <br>The page you requested could not be found.
                     <br>Dont'worry and return to the previous page.</p>
                 <p>
-                    {{$exception && $exception->getMessage() ? $$exception->getMessage() : ''}}
+                    {{$exception && $exception->getMessage() ? $exception->getMessage() : ''}}
                 </p>
                 <div class="mt-5"> <a href="/" class="btn btn-lg btn-primary px-md-5 radius-30">Go Home</a>
                 </div>

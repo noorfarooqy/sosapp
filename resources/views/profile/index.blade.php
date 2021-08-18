@@ -567,13 +567,16 @@ Dashboard
 
 @endsection
 
-@section('custom_scripts')
+@section('scripts')
 
-<!-- Page level plugins -->
-<script src="/profile_assets/vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="/profile_assets/js/demo/chart-area-demo.js"></script>
-<script src="/profile_assets/js/demo/chart-pie-demo.js"></script>
+<!-- Vector map JavaScript -->
+<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
+<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-in-mill.js"></script>
+<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-us-aea-en.js"></script>
+<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-uk-mill-en.js"></script>
+<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-au-mill.js"></script>
+<script src="/admin/assets//plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
+<script src="/admin/assets//js/index.js"></script>
 
 @endsection

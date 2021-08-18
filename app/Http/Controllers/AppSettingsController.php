@@ -18,4 +18,9 @@ class AppSettingsController extends Controller
         $settings = $this->Services->getAppSettings($request);
         return view('admin.settings.forms_view', compact('settings'));
     }
+    public function uploadAppLogo(Request $request)
+    {
+        $logo = $this->Services->uploadAppLogo($request);
+        return $logo;
+    }
 }

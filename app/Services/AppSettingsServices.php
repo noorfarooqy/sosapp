@@ -203,6 +203,37 @@ class AppSettingsServices extends DefaultService
         $this->setError($message = $this->Model->getMessage());
         return $is_json ? $this->_422Response($message) : false;
     }
+    public function uploadAppLogo($request)
+    {
+        $this->request = $request;
+
+        if($request->type != "logo" && $request->type != "favicon"){
+            return json_encode(["success" => false, "error" => "invalid parameter type", "errorcode" => 422]);
+        }
+        $this->rules = [
+            "files" => "required|image|mimes:jpeg,png,jpeg"
+        ];
+        $this->CustomValidate();
+        if($this->has_failed){
+            return json_encode(["success" => false, "error" => $this->getMessage(), "errorcode" => 422]);
+        }
+
+        $data = $this->ValidatedData();
+
+        $response =  $this->FancyUploadFile($data["files"], "upload/settings/");
+        if($this->fancy_success && !is_null($this->fancy_filename)){
+            $settings = $this->Model->get()->first();
+            if($request->type == "logo")
+                $settings->app_logo = "/storage/".$this->fancy_filename;
+            else
+                $settings->app_favicon = "/storage/".$this->fancy_filename;
+            $settings->save();
+            return $response;
+        }
+        return $response;
+        
+
+    }
 
     public function getAppSettings($request)
     {

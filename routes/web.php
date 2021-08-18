@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/read',[AdminController::class, 'ViewReadStatusFeedback'])->name('feedback.status');
             });
             Route::get('/settings', [AppSettingsController::class,'viewSettingsPage'])->name('settings.view');
+            Route::post('/settings/file', [AppSettingsController::class,'uploadAppLogo'])->name('settings.view');
         });
     });
 });

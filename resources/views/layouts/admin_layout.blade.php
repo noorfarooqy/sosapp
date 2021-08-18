@@ -101,15 +101,6 @@
 	<script src="/admin/assets//plugins/simplebar/js/simplebar.min.js"></script>
 	<script src="/admin/assets//plugins/metismenu/js/metisMenu.min.js"></script>
 	<script src="/admin/assets//plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-	<!-- Vector map JavaScript -->
-	<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-	<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
-	<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-in-mill.js"></script>
-	<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-us-aea-en.js"></script>
-	<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-uk-mill-en.js"></script>
-	<script src="/admin/assets//plugins/vectormap/jquery-jvectormap-au-mill.js"></script>
-	<script src="/admin/assets//plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
-	<script src="/admin/assets//js/index.js"></script>
 	<!-- App JS -->
 	<script src="/admin/assets//js/app.js"></script>
 	<script>
