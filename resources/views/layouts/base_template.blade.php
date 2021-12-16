@@ -12,10 +12,10 @@
 	<meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
 	<meta name="keywords" content="">
 	<meta name="description" content="">
-	<title>SOSCENTRE -  - SOMALI STUDIES CENTRE</title>
+	<title>{{env('APP_NAME')}}</title>
 
 	<!-- favicon -->
-	<link rel="shortcut icon" href="/assets/images/favicon_dark.png" type="image/x-icon">
+	<link rel="shortcut icon" href="/assets/images/DUMB-LOGO–7.png" type="image/x-icon">
 
 	<!--Google Font-->
 	<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
@@ -87,7 +87,7 @@
 						</div>
 						<div class="right">
 							<p>Get In Touch</p>
-							<h4>info@soscentre.org</h4>
+							<h4>info@dumb.co.ke</h4>
 						</div>
 					</div>
 					<div class="item d-flex">

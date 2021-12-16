@@ -5,7 +5,7 @@
             <div class="col-lg-2 col-xl-3 d-flex align-self-center logo_area1">
                 <div class="logo">
                     <a href="/">
-                        <img class="img-fluid" src="/assets/images/logo_400x140_ambient_tansparent.png" alt="">
+                        <img class="img-fluid" src="/assets/images/DUMB-LOGO–8.png" alt="">
                     </a>
                 </div>
             </div>
@@ -77,14 +77,14 @@
                 <!-- logo 2 hide on xl device-->
                 <div class="logoarea2">
                     <a href="index.html">
-                        <img src="/assets/images/favicon_white.png" alt="">
+                        <img src="/assets/images/DUMB-LOGO–8.png" alt="">
                     </a>
                 </div>
                 <!-- logo 2 -->
                 <div class="main_mamu">
                     <nav class="navbar navbar-expand-lg navbar-light p-0">
                         <a href="index.html" class="logo3">
-                            <img src="/assets/images/favicon_white.png" alt="">
+                            <img src="/assets/images/DUMB-LOGO–8.png" alt="">
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

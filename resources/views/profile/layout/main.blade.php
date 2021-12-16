@@ -228,7 +228,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; http://soscentre.org {{gmdate('Y',time())}}</span>
+            <span>Copyright &copy; http://dumb.co.ke {{gmdate('Y',time())}}</span>
           </div>
         </div>
       </footer>

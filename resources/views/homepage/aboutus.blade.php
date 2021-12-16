@@ -8,35 +8,36 @@
             <div class="col-lg-6 d-flex align-self-center">
                 <div class="left_content">
                     <h4>
-                        Somali Studies Centre
+                        DUMB
                     </h4>
-                    <h3>
-                            Made for Somalia
-                    </h3>
+                    <h5>
+                            Data Utilization & Modeling Base
+                    </h5>
                     <p>
-                        Somali Studies Centre (SOSCENTRE) is a non-profit organization
-                        and platform for all studies written by and/or regarding
-                        but not limited to Somalia and its people. 
-                    </p>
-                    <p>
-                        The studies can be in all forms from simple scholarly publications,
-                        thesis papers, theoritical research to practical applications varying
-                        in all fields and majors.
+                        DUMB - Data Utilization & Modeling Base in a non-profit organization 
+                        & platform for researchers based in Africa. The platform offers, peer to peer
+                        review for articles, researches and studies in general. 
                     </p>
                     <hr>
-                    <h4>SOSCENTRE VISION </h4>
+                    <p>
+                        The platform is also a hub for collecting, analyzing, modeling and 
+                        hypothesizing data that are collected from various different fields including,
+                        but not limited to health, education, business and more.
+                    </p>
+                    <hr>
+                    <h4>DUMB Vision </h4>
                     <ul>
                         <li>
                             <p>
                                     <i class="far fa-circle"></i>
-                                    Establish a common platform for Somali community who are enthusiastic to share
+                                    Establish a common platform for African researchers who are enthusiastic to share
                                     their views and/or experiences in various fields and disciplines.
                             </p>
                         </li>
                         <li>
                             <p>
                                     <i class="far fa-circle"></i>
-                                    Create a free and public data centre about the Somali nation and its people
+                                    Create a free and public data center about Africa in specific and its people
                                     to facilitate and encourage research. 
                             </p>
                         </li>
@@ -44,21 +45,22 @@
                             <p>
                                     <i class="far fa-circle"></i>
                                     Facilitate attaining authentic references to researchers on studies about
-                                    Somalia in all perspectives.
+                                    Africa in all perspectives.
                             </p>
                         </li>
                         <li>
                             <p>
                                     <i class="far fa-circle"></i>
                                     Promoting and encouraging free and public initiatives to improve
-                                    the literacy of the Somali community through free MOOCs( Massive Open Online Courses), 
+                                    the literacy of the African community through free MOOCs( Massive Open Online Courses), 
                                     workshops, and other possible means.
                             </p>
                         </li>
                         <li>
                             <p>
                                     <i class="far fa-circle"></i>
-                                    Developing the Somali Language through research written in the Somali language and 
+                                    Developing and maintaining means to preserve the various African Languages through 
+                                    research written in  such languages and 
                                     facililating the enrichment of the language with terms and newly invented words in 
                                     science and other disciplines.
                             </p>

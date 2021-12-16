@@ -19,7 +19,7 @@ class CreateAppSettingsTable extends Migration
             $table->string('app_name')->default(env('APP_NAME'));
             $table->string('app_favicon')->default('/assets/images/favicon_dark.png');
             $table->string('app_logo')->default('/assets/images/logo_400x140_ambient_tansparent.png');
-            $table->string('app_slogan')->default('Somali Studies Center');
+            $table->string('app_slogan')->default(env('APP_NAME'));
             $table->boolean('app_maintain')->default(false);
             $table->boolean('app_registration')->default(true);
             $table->boolean('app_login')->default(true);
@@ -32,8 +32,8 @@ class CreateAppSettingsTable extends Migration
             $table->string('social_yt_link')->nullable();
             $table->string('banner_image')->default('/assets/img/BANNER.jpg');
             $table->string('banner_small_title')->default('Think Big & Get Rewards');
-            $table->string('banner_big_title')->default('Somali Studies Centre');
-            $table->string('call_action_title')->default('Join Highly Qualified Somali Researchers');
+            $table->string('banner_big_title')->default(env('APP_NAME'));
+            $table->string('call_action_title')->default('Join Highly Qualified Researchers');
             $table->string('call_action_left_title')->default('Access to thousands');
             $table->string('call_action_left_subtitle')->default('Access to thousands');
             $table->string('call_action_left_background')->default('/assets/img/home/top-info-box-1.png');
@@ -48,12 +48,12 @@ class CreateAppSettingsTable extends Migration
             $table->string('footer_background')->default('/assets/img/footerbg.jpg');
             $table->string('footer_call_number')->default('+254706046356');
             $table->string('footer_available_support_text')->default('24/7 support');
-            $table->string('footer_email')->default(env('APP_SUPPORT_MAIL', 'info@soscentre.org'));
+            $table->string('footer_email')->default(env('APP_SUPPORT_MAIL', 'info@dumb.co.ke'));
             $table->string('footer_schedule_time')->default('8:00AM - 4:000PM');
             $table->string('contact_page_title')->default('We listen and we improve');
             $table->string('contact_page_subtitle')->default('Contact us');
             $table->string('contact_page_background')->default('Contact us');
-            $table->string('contact_page_email')->default(env('APP_SUPPORT_MAIL', 'info@soscentre.org'));
+            $table->string('contact_page_email')->default(env('APP_SUPPORT_MAIL', 'info@dumb.co.ke'));
             $table->timestamps();
         });
     }

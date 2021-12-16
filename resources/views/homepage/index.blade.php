@@ -17,7 +17,7 @@
 
                             <div class="p-5">
                                 <span>Think Big & Get Rewards</span>
-                                <h1 style="color:white">Somali Studies Centre</h1>
+                                <h1 style="color:white">{{env('APP_NAME')}}</h1>
                             </div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                             <div class="header d-flex justify-content-between" style="background-color:#47b502">
                                 <p style="line-height: 40px;padding-left: 10px;color: white;">
                                     <i class="fas fa-star"></i>
-                                    Somali Studies Centre
+                                    {{env('APP_NAME')}}
                                 </p>
                             </div>
                             <div class="list">
@@ -207,7 +207,7 @@
         </div>
         <div class="row top_info">
             <div class="col-12 text-center">
-                <h2 class="title">Join Highly Qualified Somali Researchers <span> </span></h2>
+                <h2 class="title">Join Highly Qualified Researchers <span> </span></h2>
             </div>
             <div class="col-lg-12 col-xl-6">
                 <div class="box-1 d-flex">

@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<title> @yield('title') - {{env('APP_NAME')}} </title>
 	<!--favicon-->
-	<link rel="icon" href="/admin/assets//images/favicon-32x32.png" type="image/png" />
+	<link rel="icon" href="/admin/assets//images/DUMB-LOGO–7.png" type="image/png" />
 	<!-- loader-->
 	<link href="/admin/assets//css/pace.min.css" rel="stylesheet" />
 	<script src="/admin/assets//js/pace.min.js"></script>
@@ -23,8 +23,8 @@
 	<!-- wrapper -->
 	<div class="wrapper">
 		<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top border-bottom">
-			<a class="navbar-brand" href="javascript:;">
-				<img src="{{App\Services\CacheServices::getAppSettings()->app_logo}}" width="160" alt="">
+			<a class="navbar-brand" href="/">
+				<img src="/assets/images/DUMB-LOGO–9.png" width="160" alt="">
 			</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">	<span class="navbar-toggler-icon"></span>
 			</button>
@@ -51,7 +51,7 @@
 					<li class="list-inline-item"><a href="javascript:;"><i class='bx bxl-google mr-1'></i>Google</a>
 					</li>
 				</ul>
-				<p class="mb-0">Syndash @2020 | Developed By : <a href="https://themeforest.net/user/codervent" target="_blank">codervent</a>
+				<p class="mb-0"> DUMB {{gmdate('@Y', time())}} | Product of : <a href="https://drongo.co.ke" target="_blank">Drongo Technology</a>
 				</p>
 			</div>
 		</div>
